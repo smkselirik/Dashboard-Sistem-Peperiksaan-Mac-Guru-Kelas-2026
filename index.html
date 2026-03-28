@@ -162,7 +162,7 @@
                 
                 <div style="display: flex; gap: 15px; flex-wrap: wrap; border-top: 2px solid #eee; padding-top: 20px;">
                     <button class="btn-save" onclick="saveAllUlasan()">💾 Simpan Ke Pangkalan Data ('MASTER')</button>
-                    <button class="btn-secondary" style="background:#009688;" onclick="printClassTable()">🖨️ Cetak Jadual Kelas (Landscape)</button>
+                    <button class="btn-secondary" style="background:#009688;" onclick="printClassTable()">🖨️ Cetak Keputusan Keseluruhan Kelas</button>
                     <button class="btn-secondary" style="background:#2196F3;" onclick="printBulkSlips()">📑 Cetak Pukal Slip Keputusan</button>
                 </div>
             </div>
@@ -205,27 +205,42 @@
             "Hargailah masa dan buangkan sikap kerap ponteng kelas. Pencapaian memuaskan. Teruskan usaha anda. Anda pasti berjaya."
         ];
 
-        // PEMETAAN LAJUR MARKAH 0-INDEXED
+        // PEMETAAN LAJUR MARKAH 0-INDEXED (BESERTA SINGKATAN SUBJEK UNTUK CETAKAN JADUAL)
         const subjectsLower = [
-            {name: "BAHASA MELAYU", mark: 4, grade: 5}, {name: "ENGLISH LANGUAGE", mark: 6, grade: 7},
-            {name: "MATEMATIK", mark: 8, grade: 9}, {name: "SEJARAH", mark: 10, grade: 11},
-            {name: "SAINS", mark: 12, grade: 13}, {name: "GEOGRAFI", mark: 14, grade: 15},
-            {name: "BAHASA IBAN", mark: 16, grade: 17}, {name: "PENDIDIKAN MORAL", mark: 18, grade: 19},
-            {name: "PENDIDIKAN ISLAM", mark: 20, grade: 21}, {name: "REKA BENTUK & TEKNOLOGI", mark: 22, grade: 23},
-            {name: "ASAS SAINS KOMPUTER", mark: 24, grade: 25}, {name: "PENDIDIKAN SENI VISUAL", mark: 26, grade: 27},
-            {name: "PENDIDIKAN JASMANI & PENDIDIKAN KESIHATAN", mark: 40, grade: 41}
+            {name: "BAHASA MELAYU", shortName: "BM", mark: 4, grade: 5}, 
+            {name: "ENGLISH LANGUAGE", shortName: "ENG", mark: 6, grade: 7},
+            {name: "MATEMATIK", shortName: "MATHS", mark: 8, grade: 9}, 
+            {name: "SEJARAH", shortName: "SEJ", mark: 10, grade: 11},
+            {name: "SAINS", shortName: "SN", mark: 12, grade: 13}, 
+            {name: "GEOGRAFI", shortName: "GEO", mark: 14, grade: 15},
+            {name: "BAHASA IBAN", shortName: "BIB", mark: 16, grade: 17}, 
+            {name: "PENDIDIKAN MORAL", shortName: "PM", mark: 18, grade: 19},
+            {name: "PENDIDIKAN ISLAM", shortName: "PI", mark: 20, grade: 21}, 
+            {name: "REKA BENTUK & TEKNOLOGI", shortName: "RBT", mark: 22, grade: 23},
+            {name: "ASAS SAINS KOMPUTER", shortName: "ASK", mark: 24, grade: 25}, 
+            {name: "PENDIDIKAN SENI VISUAL", shortName: "PSN", mark: 26, grade: 27},
+            {name: "PENDIDIKAN JASMANI & PENDIDIKAN KESIHATAN", shortName: "PJPK", mark: 40, grade: 41}
         ];
 
         const subjectsUpper = [
-            {name: "BAHASA MELAYU", mark: 4, grade: 5}, {name: "SEJARAH", mark: 6, grade: 7},
-            {name: "ENGLISH LANGUAGE", mark: 8, grade: 9}, {name: "MATEMATIK/MATHEMATICS", mark: 10, grade: 11},
-            {name: "PENDIDIKAN MORAL", mark: 12, grade: 13}, {name: "PENDIDIKAN ISLAM", mark: 14, grade: 15},
-            {name: "SAINS", mark: 16, grade: 17}, {name: "PENDIDIKAN SENI VISUAL", mark: 18, grade: 19},
-            {name: "BAHASA IBAN", mark: 20, grade: 21}, {name: "REKA CIPTA", mark: 22, grade: 23},
-            {name: "PENGAJIAN PENIAGAAN", mark: 24, grade: 25}, {name: "PHYSICS", mark: 26, grade: 27},
-            {name: "CHEMISTRY", mark: 28, grade: 29}, {name: "BIOLOGY", mark: 30, grade: 31},
-            {name: "ADDITIONAL MATHEMATICS", mark: 32, grade: 33}, {name: "SAINS KOMPUTER", mark: 34, grade: 35},
-            {name: "KIMPALAN ARKA & GAS", mark: 36, grade: 37}, {name: "PENDIDIKAN JASMANI & PENDIDIKAN KESIHATAN", mark: 62, grade: 63}
+            {name: "BAHASA MELAYU", shortName: "BM", mark: 4, grade: 5}, 
+            {name: "SEJARAH", shortName: "SEJ", mark: 6, grade: 7},
+            {name: "ENGLISH LANGUAGE", shortName: "ENG", mark: 8, grade: 9}, 
+            {name: "MATEMATIK/MATHEMATICS", shortName: "MATHS", mark: 10, grade: 11},
+            {name: "PENDIDIKAN MORAL", shortName: "PM", mark: 12, grade: 13}, 
+            {name: "PENDIDIKAN ISLAM", shortName: "PI", mark: 14, grade: 15},
+            {name: "SAINS", shortName: "SN", mark: 16, grade: 17}, 
+            {name: "PENDIDIKAN SENI VISUAL", shortName: "PSV", mark: 18, grade: 19},
+            {name: "BAHASA IBAN", shortName: "BIB", mark: 20, grade: 21}, 
+            {name: "REKA CIPTA", shortName: "RC", mark: 22, grade: 23},
+            {name: "PENGAJIAN PENIAGAAN", shortName: "PP", mark: 24, grade: 25}, 
+            {name: "PHYSICS", shortName: "FIZ", mark: 26, grade: 27},
+            {name: "CHEMISTRY", shortName: "KIM", mark: 28, grade: 29}, 
+            {name: "BIOLOGY", shortName: "BIO", mark: 30, grade: 31},
+            {name: "ADDITIONAL MATHEMATICS", shortName: "ADD MATHS", mark: 32, grade: 33}, 
+            {name: "SAINS KOMPUTER", shortName: "SK", mark: 34, grade: 35},
+            {name: "KIMPALAN ARKA & GAS", shortName: "KAG", mark: 36, grade: 37}, 
+            {name: "PENDIDIKAN JASMANI & PENDIDIKAN KESIHATAN", shortName: "PJPK", mark: 62, grade: 63}
         ];
 
         const summaryLower = { jum: 54, purata: 55, gp: 56, kdk: 58, analisis: 59, ulasan: 60, kep: 62, kdt: 69, guru: 70 };
@@ -259,7 +274,7 @@
             }
         }
 
-        // FUNGSI LOG MASUK & KELUAR
+        // FUNGSI LOG MASUK
         function teacherLogin() {
             const id = document.getElementById('tch-id').value;
             const pass = document.getElementById('tch-pass').value;
@@ -269,13 +284,28 @@
             } else { alert("ID Pengguna atau Kata Laluan Salah!"); }
         }
 
+        // FUNGSI LOG KELUAR - DIKEMAS KINI
         function logout() {
             if(confirm("Adakah anda pasti untuk keluar? Data yang belum disimpan ke hamparan MASTER mungkin kekal dalam pelayar peranti ini sahaja.")){
+                // Paparkan semula Log Masuk, sembunyikan Papan Pemuka
                 document.getElementById('teacher-login').classList.remove('hidden');
                 document.getElementById('teacher-dashboard').classList.add('hidden');
                 document.getElementById('class-controls').classList.add('hidden');
+                
+                // Kosongkan field ID dan Password
+                document.getElementById('tch-id').value = '';
+                document.getElementById('tch-pass').value = '';
+
+                // Reset Dropdown Pilihan Tingkatan dan Kelas
                 document.getElementById('tch-tingkatan').value = '';
                 document.getElementById('tch-kelas').innerHTML = '<option value="">-- Sila Pilih Tingkatan Dahulu --</option>';
+                
+                // Kosongkan data dalam jadual secara total
+                document.getElementById('student-list-container').innerHTML = '';
+                currentData = []; // Buang memori data
+                
+                // Tolak scroll semula ke atas (top of the page)
+                window.scrollTo(0, 0);
             }
         }
 
@@ -297,11 +327,9 @@
         }
 
         function buildUlasanDropdown(studentIC, currentUlasan) {
-            // Ambil ulasan dari LocalStore dulu (jika ada), kalau tak guna dari hamparan CSV
             let savedUlasan = localStorage.getItem(`ulasan_${studentIC}`);
             let ulasanToUse = savedUlasan !== null ? savedUlasan : currentUlasan;
 
-            // Pastikan senarai ulasan yang dibina adalah unique (tiada duplikasi dari sumber prompt)
             let uniqueOptions = [...new Set(ulasanOptions)];
 
             let selectHTML = `<select id="ulasan-${studentIC}" class="ulasan-select" onchange="storeLocal('${studentIC}')">
@@ -320,7 +348,6 @@
         }
 
         function storeLocal(ic) {
-            // Simpan automatik ke local storage bila pilihan bertukar
             const ulasan = document.getElementById(`ulasan-${ic}`).value;
             localStorage.setItem(`ulasan_${ic}`, ulasan);
         }
@@ -378,14 +405,12 @@
             document.getElementById('loading').classList.remove('hidden');
 
             try {
-                // Proses penyimpanan data ke Google Sheets secara berturutan/selari
                 const requests = students.map(std => {
                     const ic = std[1];
                     const ulasanEl = document.getElementById(`ulasan-${ic}`);
-                    if(!ulasanEl) return Promise.resolve(); // Abaikan jika element tiada
+                    if(!ulasanEl) return Promise.resolve();
                     const ulasan = ulasanEl.value;
                     
-                    // Simpan sekali lagi ke LocalStorage sebagai kepastian
                     localStorage.setItem(`ulasan_${ic}`, ulasan);
 
                     return fetch(scriptUrl, {
@@ -405,7 +430,6 @@
             document.getElementById('loading').innerText = "Sedang memproses... Sila tunggu sebentar.";
         }
 
-        // FUNGSI BANTUAN AMBIL ULASAN TERKINI
         function getLatestUlasan(ic, stdUlasanSheet) {
             let localUlasan = localStorage.getItem(`ulasan_${ic}`);
             return localUlasan !== null ? localUlasan : stdUlasanSheet;
@@ -418,7 +442,6 @@
             const namaGuru = std[sum.guru] ? std[sum.guru].toUpperCase() : 'GURU TINGKATAN';
             const kelas = std[3] ? std[3].toUpperCase() : '';
             
-            // Dapatkan ulasan terkini sewaktu cetakan
             const currentUlasan = getLatestUlasan(std[1], std[sum.ulasan] || '');
 
             let html = `
@@ -476,7 +499,6 @@
             return html;
         }
 
-        // CETAK INDIVIDU & PUKAL - PORTRAIT
         function printIndividual(ic, form) {
             const student = currentData.find(row => row[1] === ic);
             if(student) {
@@ -499,7 +521,6 @@
             setTimeout(() => window.print(), 800);
         }
 
-        // CETAK KESELURUHAN KELAS - LANDSCAPE (Format Master Sheet)
         function printClassTable() {
             const form = document.getElementById('tch-tingkatan').value;
             const kelas = document.getElementById('tch-kelas').value;
@@ -525,8 +546,7 @@
                             <th rowspan="2">No K/P</th>`;
             
             activeSubjects.forEach(s => {
-                let shortName = s.name.substring(0, 10) + (s.name.length > 10 ? '.' : '');
-                html += `<th colspan="2" style="text-align:center;">${shortName}</th>`;
+                html += `<th colspan="2" style="text-align:center;">${s.shortName}</th>`;
             });
 
             html += `       <th rowspan="2">JUM</th>
