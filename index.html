@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Peperiksaan SMK Selirik 2026</title>
+    <title>Portal Guru Kelas - Peperiksaan SMK Selirik 2026</title>
     <style>
         :root {
             --night-blue: #151B54;
@@ -22,7 +22,6 @@
         /* Header Night Blue dengan Corak Abstrak Korporat Elegant */
         header {
             background-color: var(--night-blue);
-            /* Corak garisan abstrak menggunakan linear-gradient */
             background-image: 
                 linear-gradient(30deg, rgba(255,255,255,0.03) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.03) 87.5%, rgba(255,255,255,0.03)),
                 linear-gradient(150deg, rgba(255,255,255,0.03) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.03) 87.5%, rgba(255,255,255,0.03)),
@@ -62,15 +61,15 @@
 
         @media (max-width: 768px) {
             .container { margin: 15px; padding: 20px; }
-            .tabs { flex-direction: column; }
-            .tab { text-align: center; border-bottom: none !important; border-left: 3px solid transparent; }
-            .tab.active { border-left: 3px solid var(--night-blue); border-bottom: none !important; background: #f8f9fa;}
         }
 
-        .tabs { display: flex; margin-bottom: 25px; border-bottom: 2px solid #eee; }
-        .tab { padding: 15px 24px; cursor: pointer; font-weight: bold; color: #777; transition: all 0.3s; flex: 1; text-align: center; }
-        .tab:hover { color: var(--night-blue); background: #f0f4f8; }
-        .tab.active { color: var(--night-blue); border-bottom: 3px solid var(--night-blue); background: transparent; }
+        .portal-title {
+            color: var(--night-blue);
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
 
         .form-group { margin-bottom: 18px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #444; font-size: 14px; }
@@ -122,7 +121,7 @@
             @page { size: A4 portrait; margin: 10mm; }
             .landscape-print { @page { size: A4 landscape; } }
             .no-print { display: none !important; }
-            .slip-container { border: none; padding: 0; } /* Buang border luaran masa print supaya kemas */
+            .slip-container { border: none; padding: 0; } 
         }
     </style>
 </head>
@@ -135,51 +134,47 @@
     </header>
 
     <div class="container no-print">
-        <div class="tabs">
-            <div class="tab" onclick="switchTab('teacher')">Portal Guru Kelas</div>
+        
+        <div id="loading" class="hidden">Sedang menyegerak pangkalan data... Sila tunggu sebentar.</div>
+
+        <div id="teacher-login">
+            <h2 class="portal-title">Log Masuk Guru Kelas</h2>
+            <div class="form-group">
+                <label>ID Pengguna</label>
+                <input type="text" id="tch-id" placeholder="Masukkan ID Pengguna">
+            </div>
+            <div class="form-group">
+                <label>Kata Laluan</label>
+                <input type="password" id="tch-pass" placeholder="Masukkan Kata Laluan">
+            </div>
+            <button class="btn" onclick="teacherLogin()">Log Masuk Portal</button>
         </div>
 
-        <div id="loading" class="hidden">Sedang menyegerak data... Sila tunggu sebentar.</div>
-
-        <div id="teacher-portal" class="hidden">
-            <div id="teacher-login">
-                <div class="form-group">
-                    <label>ID Pengguna Guru</label>
-                    <input type="text" id="tch-id" placeholder="Masukkan ID Pengguna">
-                </div>
-                <div class="form-group">
-                    <label>Kata Laluan</label>
-                    <input type="password" id="tch-pass" placeholder="Masukkan Kata Laluan">
-                </div>
-                <button class="btn" onclick="teacherLogin()">Log Masuk Portal</button>
+        <div id="teacher-dashboard" class="hidden">
+            <h2 class="portal-title">Papan Pemuka Guru Tingkatan</h2>
+            <div class="form-group">
+                <label>Pilih Tingkatan</label>
+                <select id="tch-tingkatan" onchange="fetchClassesForTeacher()">
+                    <option value="">-- Pilih Tingkatan --</option>
+                    <option value="1">Tingkatan 1</option>
+                    <option value="2">Tingkatan 2</option>
+                    <option value="3">Tingkatan 3</option>
+                    <option value="4">Tingkatan 4</option>
+                    <option value="5">Tingkatan 5</option>
+                </select>
             </div>
-
-            <div id="teacher-dashboard" class="hidden">
-                <h3 style="color:var(--night-blue); border-bottom: 2px solid #eee; padding-bottom: 10px;">Papan Pemuka Guru Tingkatan</h3>
-                <div class="form-group">
-                    <label>Pilih Tingkatan</label>
-                    <select id="tch-tingkatan" onchange="fetchClassesForTeacher()">
-                        <option value="">-- Pilih Tingkatan --</option>
-                        <option value="1">Tingkatan 1</option>
-                        <option value="2">Tingkatan 2</option>
-                        <option value="3">Tingkatan 3</option>
-                        <option value="4">Tingkatan 4</option>
-                        <option value="5">Tingkatan 5</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Pilih Kelas</label>
-                    <select id="tch-kelas" onchange="loadClassData()">
-                        <option value="">-- Pilih Kelas --</option>
-                    </select>
-                </div>
+            <div class="form-group">
+                <label>Pilih Kelas</label>
+                <select id="tch-kelas" onchange="loadClassData()">
+                    <option value="">-- Sila Pilih Tingkatan Dahulu --</option>
+                </select>
+            </div>
+            
+            <div id="class-controls" class="hidden" style="margin-top: 25px;">
+                <button class="btn btn-secondary" onclick="printClassTable()">🖨️ Cetak Jadual Keseluruhan Kelas (Landscape)</button>
+                <button class="btn btn-secondary" style="background:#2196F3;" onclick="printBulkSlips()">📑 Cetak Pukal Semua Slip Individu</button>
                 
-                <div id="class-controls" class="hidden" style="margin-top: 25px;">
-                    <button class="btn btn-secondary" onclick="printClassTable()">🖨️ Cetak Jadual Keseluruhan Kelas (Landscape)</button>
-                    <button class="btn btn-secondary" style="background:#2196F3;" onclick="printBulkSlips()">📑 Cetak Pukal Semua Slip Individu</button>
-                    
-                    <div id="student-list-container" style="margin-top: 20px; overflow-x: auto;"></div>
-                </div>
+                <div id="student-list-container" style="margin-top: 20px; overflow-x: auto;"></div>
             </div>
         </div>
     </div>
@@ -250,15 +245,7 @@
 
         let currentData = [];
 
-        // FUNGSI UMUM
-        function switchTab(tab) {
-            document.getElementById('student-portal').classList.add('hidden');
-            document.getElementById('teacher-portal').classList.add('hidden');
-            document.getElementById(`${tab}-portal`).classList.remove('hidden');
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-        }
-
+        // FUNGSI TARIK DATA CSV
         async function fetchCSV(url) {
             try {
                 document.getElementById('loading').classList.remove('hidden');
@@ -288,20 +275,7 @@
             }
         }
 
-        // FUNGSI PELAJAR
-        async function checkStudentResult() {
-            const form = document.getElementById('std-tingkatan').value;
-            const ic = document.getElementById('std-ic').value.trim();
-            if(!ic) return alert("Sila masukkan No Kad Pengenalan.");
-
-            const data = await fetchCSV(config[form].sheet);
-            const student = data.find(row => row[1] === ic); // IC di Lajur B (Index 1)
-            
-            if(!student) return alert("Rekod tidak dijumpai. Sila semak No K/P.");
-            generateSlip(student, form, true);
-        }
-
-        // FUNGSI GURU
+        // FUNGSI LOG MASUK GURU
         function teacherLogin() {
             const id = document.getElementById('tch-id').value;
             const pass = document.getElementById('tch-pass').value;
@@ -311,6 +285,7 @@
             } else { alert("ID Pengguna atau Kata Laluan Salah!"); }
         }
 
+        // FUNGSI PAPAR KELAS
         async function fetchClassesForTeacher() {
             const form = document.getElementById('tch-tingkatan').value;
             if(!form) { document.getElementById('class-controls').classList.add('hidden'); return; }
@@ -328,6 +303,7 @@
             });
         }
 
+        // FUNGSI BINA DROPDOWN ULASAN
         function buildUlasanDropdown(studentIC, currentUlasan) {
             let selectHTML = `<select id="ulasan-${studentIC}" class="ulasan-select">
                 <option value="">-- Pilih Ulasan --</option>`;
@@ -337,7 +313,6 @@
                 selectHTML += `<option value="${opt}" ${selected}>${opt}</option>`;
             });
             
-            // Allow manual text if the current ulasan from sheet is not in predefined list
             if (currentUlasan && !ulasanOptions.includes(currentUlasan)) {
                 selectHTML += `<option value="${currentUlasan}" selected>${currentUlasan} (Semasa)</option>`;
             }
@@ -345,6 +320,7 @@
             return selectHTML;
         }
 
+        // FUNGSI PAPAR DATA PELAJAR
         function loadClassData() {
             const form = document.getElementById('tch-tingkatan').value;
             const kelas = document.getElementById('tch-kelas').value;
@@ -376,6 +352,7 @@
             container.innerHTML = html;
         }
 
+        // FUNGSI SIMPAN ULASAN KE GOOGLE SCRIPT
         async function saveUlasan(ic, form) {
             const ulasan = document.getElementById(`ulasan-${ic}`).value;
             const scriptUrl = config[form].script;
@@ -383,20 +360,19 @@
             alert(`Sistem sedang menghantar ulasan. Sila tunggu seketika...`);
             
             try {
-                // Hantaran POST ke Google Apps Script
                 await fetch(scriptUrl, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: `ic=${encodeURIComponent(ic)}&ulasan=${encodeURIComponent(ulasan)}`
                 });
-                alert("Berjaya! Ulasan telah disimpan ke dalam pangkalan data (Google Sheets).");
+                alert("Berjaya! Ulasan telah dihantar ke dalam pangkalan data (Google Sheets).");
             } catch (e) {
                 alert("Ralat komunikasi dengan pelayan. Sila cuba sebentar lagi.");
             }
         }
 
-        // PENJANAAN HTML SLIP KEPUTUSAN
+        // FUNGSI PENJANAAN HTML SLIP KEPUTUSAN
         function generateSlipHTML(std, form) {
             const type = config[form].type;
             const sub = type === 'lower' ? subjectsLower : subjectsUpper;
@@ -423,7 +399,6 @@
             sub.forEach(s => {
                 const mark = std[s.mark];
                 const grade = std[s.grade];
-                // Sembunyikan NULL
                 if(mark && mark.toUpperCase() !== 'NULL' && mark.trim() !== '') {
                     html += `<tr><td>${s.name}</td><td style="text-align:center;">${mark}</td><td style="text-align:center;">${grade || ''}</td></tr>`;
                 }
@@ -461,17 +436,13 @@
         }
 
         // FUNGSI MENCETAK
-        function generateSlip(std, form, autoPrint = false) {
-            document.body.classList.remove('landscape-print');
-            document.getElementById('print-area').innerHTML = generateSlipHTML(std, form);
-            if(autoPrint) {
-                setTimeout(() => window.print(), 500); // Tunggu imej header load
-            }
-        }
-
         function printIndividual(ic, form) {
             const student = currentData.find(row => row[1] === ic);
-            if(student) generateSlip(student, form, true);
+            if(student) {
+                document.body.classList.remove('landscape-print');
+                document.getElementById('print-area').innerHTML = generateSlipHTML(student, form);
+                setTimeout(() => window.print(), 500); 
+            }
         }
 
         function printBulkSlips() {
@@ -513,7 +484,6 @@
                         <th>Keputusan</th>
                     </tr>`;
             
-            // Susun berdasarkan KDK (jika data tersebut adalah nombor)
             students.sort((a, b) => {
                 let kdkA = parseInt(a[sum.kdk]) || 999;
                 let kdkB = parseInt(b[sum.kdk]) || 999;
