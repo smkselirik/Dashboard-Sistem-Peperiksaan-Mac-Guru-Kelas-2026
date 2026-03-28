@@ -25,12 +25,8 @@
             background-image: 
                 linear-gradient(30deg, rgba(255,255,255,0.03) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.03) 87.5%, rgba(255,255,255,0.03)),
                 linear-gradient(150deg, rgba(255,255,255,0.03) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.03) 87.5%, rgba(255,255,255,0.03)),
-                linear-gradient(30deg, rgba(255,255,255,0.03) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.03) 87.5%, rgba(255,255,255,0.03)),
-                linear-gradient(150deg, rgba(255,255,255,0.03) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.03) 87.5%, rgba(255,255,255,0.03)),
-                linear-gradient(60deg, rgba(255,255,255,0.02) 25%, transparent 25.5%, transparent 75%, rgba(255,255,255,0.02) 75%, rgba(255,255,255,0.02)),
                 linear-gradient(60deg, rgba(255,255,255,0.02) 25%, transparent 25.5%, transparent 75%, rgba(255,255,255,0.02) 75%, rgba(255,255,255,0.02));
             background-size: 80px 140px;
-            background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
             color: white;
             text-align: center;
             padding: 25px 20px;
@@ -97,31 +93,49 @@
 
         /* Slip Styles */
         .slip-container {
-            border: 2px solid #333; padding: 30px; margin-bottom: 30px; background: white; box-sizing: border-box; font-family: 'Arial', sans-serif;
+            border: 2px solid #333; padding: 30px; background: white; box-sizing: border-box; font-family: 'Arial', sans-serif; margin-bottom: 20px;
         }
-        .slip-header img { width: 100%; height: auto; border-bottom: 3px solid #111; padding-bottom: 10px; margin-bottom: 20px; }
-        .slip-details { display: flex; flex-wrap: wrap; justify-content: space-between; margin-bottom: 20px; font-weight: bold; font-size: 15px; border-bottom: 1px solid #ddd; padding-bottom: 15px; }
-        .slip-details div { width: 48%; margin-bottom: 8px; }
+        .slip-header img { width: 100%; height: auto; border-bottom: 3px solid #111; padding-bottom: 10px; margin-bottom: 15px; }
+        .slip-details { display: flex; flex-wrap: wrap; justify-content: space-between; margin-bottom: 15px; font-weight: bold; font-size: 14px; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
+        .slip-details div { width: 48%; margin-bottom: 5px; }
         
-        .signature-area { display: flex; justify-content: space-between; margin-top: 50px; font-size: 14px; }
+        .slip-table th, .slip-table td { padding: 6px 10px; font-size: 13px; border: 1px solid #333; }
+        .slip-table th { background-color: #f0f0f0 !important; color: #000; }
+
+        .summary-box {
+            margin-top:15px; font-weight:bold; font-size:13px; line-height:1.5;
+        }
+
+        .signature-area { display: flex; justify-content: space-between; margin-top: 35px; font-size: 13px; }
         .signature-area .left-sign, .signature-area .right-sign { width: 45%; text-align: left; }
-        .signature-area p { margin: 4px 0; }
+        .signature-area p { margin: 3px 0; }
 
         #loading { text-align: center; font-weight: bold; color: var(--night-blue); margin: 20px 0; padding: 20px; background: #eef2fa; border-radius: 8px; }
 
         .ulasan-select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
 
-        /* Print Media Queries */
+        /* Print Media Queries - DIPERBAIKI UNTUK CETAKAN PUKAL A4 */
         @media print {
             body * { visibility: hidden; }
             #print-area, #print-area * { visibility: visible; }
             #print-area { position: absolute; left: 0; top: 0; width: 100%; }
-            .page-break { page-break-after: always; }
             body { background: white; margin: 0; padding: 0; }
+            
             @page { size: A4 portrait; margin: 10mm; }
-            .landscape-print { @page { size: A4 landscape; } }
+            .landscape-print { @page { size: A4 landscape; margin: 10mm; } }
+            
             .no-print { display: none !important; }
-            .slip-container { border: none; padding: 0; } 
+            
+            /* Kunci Cetakan Pukal agar setiap slip masuk muka surat baharu */
+            .slip-container { 
+                border: none; 
+                padding: 0; 
+                margin: 0; 
+                page-break-after: always; 
+                page-break-inside: avoid;
+                width: 100%;
+            }
+            .slip-container:last-child { page-break-after: auto; }
         }
     </style>
 </head>
@@ -186,7 +200,7 @@
     </div>
 
     <script>
-        // KONFIGURASI PANGKALAN DATA (Google Sheets & Apps Script)
+        // KONFIGURASI PANGKALAN DATA
         const config = {
             1: { sheet: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS9ngcL37KMX8ZDsGKomo7Lv6yowNqFdcWciJuvS1UkUU6aFHI_VKuFDLP1d0fKtMlXTW8APMYD38xZ/pub?gid=1419213935&single=true&output=csv", script: "https://script.google.com/macros/s/AKfycbzI4uyIyKd5O0do0KQRbdjuzay3OMUBpN0EuJCOtbcAI4dAmh0Fj_n_CTsCX9mwdeNsEg/exec", type: "lower" },
             2: { sheet: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSD6QwXil_0_gA0OBb2t82FneuCt68Sp7P9-He4zyBPEoaVHkJent8hiCSFPa33F-AEmR9BgeEogpt-/pub?gid=1419213935&single=true&output=csv", script: "https://script.google.com/macros/s/AKfycbw0BakCGDqNheCPyzdqrstH8jM0Je3D1fM2oJTB0odH5UIAO08GNdOSIqWMK6e1ZQmL/exec", type: "lower" },
@@ -200,23 +214,23 @@
             "Teruskan berusaha untuk kejayaan lebih cemerlang untuk masa depan yang gemilang.",
             "Sekalung tahniah atas kejayaan anda. Teruskan Usaha dengan lebih gigih untuk kejayaan lebih baik.",
             "Prestasi anda memberangsangkan. Usaha lagi untuk kejayaan yang lebih cemerlang.",
-            "Anda mampu mencapai lebih kecemerlangan dengan bersikap proaktif di dalam kelas.",
-            "Keputusan semasa menunjukkan anda masih belum menemui cara belajar yang betul.",
+            "Anda mesti mempunyai motivasi yang tinggi dan minat terhadap pengajaran dan pembelajaran di dalam kelas. Anda mampu mencapai lebih kecemerlangan dengan bersikap proaktif di dalam kelas.",
+            "Keputusan semasa menunjukkan anda masih belum menemui cara belajar yang betul bagi mendapatkan keputusan yang lebih baik.",
             "Keputusan masih ditahap sederhana. Ia memerlukan komitmen daripada anda untuk memperbaiki pencapaian.",
             "Anda harus berusaha dengan lebih gigih bagi mendapatkan keputusan yang sebaiknya. Jangan berlengah lagi.",
-            "Beberapa mata pelajaran masih belum mencapai tahap yang sepatutnya. Usaha dengan lebih kuat.",
+            "Beberapa mata pelajaran masih belum mencapai tahap yang sepatutnya. Usaha dengan lebih kuat bagi memperbaiki prestasi.",
             "Berikan lebih tumpuan kepada matapelajaran tertentu.",
-            "Kejayaan tertakluk kepada daya usaha anda. Tingkatkan usaha anda untuk kejayaan yang lebih baik.",
-            "Usaha anda telah menunjukkan hasil yang agak baik. Gandakan usaha anda.",
-            "Usaha dengan lebih kuat lagi. Pastikan keputusan kali ini dapat diubah melalui kerja keras.",
+            "Kejayaan tertakluk kepada daya usaha anda. Oleh itu tingkatkan usaha anda untuk kejayaan yang lebih baik daripada hari ini.",
+            "Usaha anda telah menunjukkan hasil yang agak baik. Gandakan usaha anda untuk mencapai kejayaan yang lebih baik.",
+            "Usaha dengan lebih kuat lagi. Pastikan keputusan kali ini dapat diubah melalui kerja keras selepas ini.",
             "Usaha berterusan menjamin keputusan yang lebih baik pada masa akan datang.",
             "Tingkatkan usaha anda. Anda pasti akan berjaya dengan lebih baik daripada hari ini.",
             "Hargai masa dan tingkatkan usaha anda.",
             "Pencapaian masih lemah. Tingkatkan usaha dan ubah sikap demi masa depan anda.",
-            "Hargailah masa dan buangkan sikap kerap ponteng kelas. Pencapaian memuaskan."
+            "Hargailah masa dan buangkan sikap kerap ponteng kelas. Pencapaian memuaskan. Teruskan usaha anda. Anda pasti berjaya."
         ];
 
-        // PEMETAAN LAJUR MARKAH (Index berasaskan 0)
+        // PEMETAAN LAJUR MARKAH
         const subjectsLower = [
             {name: "BAHASA MELAYU", mark: 4, grade: 5}, {name: "ENGLISH LANGUAGE", mark: 6, grade: 7},
             {name: "MATEMATIK", mark: 8, grade: 9}, {name: "SEJARAH", mark: 10, grade: 11},
@@ -224,7 +238,7 @@
             {name: "BAHASA IBAN", mark: 16, grade: 17}, {name: "PENDIDIKAN MORAL", mark: 18, grade: 19},
             {name: "PENDIDIKAN ISLAM", mark: 20, grade: 21}, {name: "REKA BENTUK & TEKNOLOGI", mark: 22, grade: 23},
             {name: "ASAS SAINS KOMPUTER", mark: 24, grade: 25}, {name: "PENDIDIKAN SENI VISUAL", mark: 26, grade: 27},
-            {name: "PEND. JASMANI & KESIHATAN", mark: 40, grade: 41}
+            {name: "PENDIDIKAN JASMANI & PENDIDIKAN KESIHATAN", mark: 40, grade: 41}
         ];
 
         const subjectsUpper = [
@@ -236,7 +250,7 @@
             {name: "PENGAJIAN PERNIAGAAN", mark: 24, grade: 25}, {name: "PHYSICS", mark: 26, grade: 27},
             {name: "CHEMISTRY", mark: 28, grade: 29}, {name: "BIOLOGY", mark: 30, grade: 31},
             {name: "ADDITIONAL MATHEMATICS", mark: 32, grade: 33}, {name: "SAINS KOMPUTER", mark: 34, grade: 35},
-            {name: "KIMPALAN ARKA & GAS", mark: 36, grade: 37}, {name: "PEND. JASMANI & KESIHATAN", mark: 62, grade: 63}
+            {name: "KIMPALAN ARKA & GAS", mark: 36, grade: 37}, {name: "PENDIDIKAN JASMANI & PENDIDIKAN KESIHATAN", mark: 62, grade: 63}
         ];
 
         // PEMETAAN LAJUR RUMUSAN
@@ -245,7 +259,6 @@
 
         let currentData = [];
 
-        // FUNGSI TARIK DATA CSV
         async function fetchCSV(url) {
             try {
                 document.getElementById('loading').classList.remove('hidden');
@@ -269,13 +282,12 @@
                 document.getElementById('loading').classList.add('hidden');
                 return rows;
             } catch (error) {
-                alert("Ralat menyambung ke pangkalan data. Sila pastikan pautan sah.");
+                alert("Ralat menyambung ke pangkalan data.");
                 document.getElementById('loading').classList.add('hidden');
                 return [];
             }
         }
 
-        // FUNGSI LOG MASUK GURU
         function teacherLogin() {
             const id = document.getElementById('tch-id').value;
             const pass = document.getElementById('tch-pass').value;
@@ -285,7 +297,6 @@
             } else { alert("ID Pengguna atau Kata Laluan Salah!"); }
         }
 
-        // FUNGSI PAPAR KELAS
         async function fetchClassesForTeacher() {
             const form = document.getElementById('tch-tingkatan').value;
             if(!form) { document.getElementById('class-controls').classList.add('hidden'); return; }
@@ -303,7 +314,6 @@
             });
         }
 
-        // FUNGSI BINA DROPDOWN ULASAN
         function buildUlasanDropdown(studentIC, currentUlasan) {
             let selectHTML = `<select id="ulasan-${studentIC}" class="ulasan-select">
                 <option value="">-- Pilih Ulasan --</option>`;
@@ -320,7 +330,6 @@
             return selectHTML;
         }
 
-        // FUNGSI PAPAR DATA PELAJAR
         function loadClassData() {
             const form = document.getElementById('tch-tingkatan').value;
             const kelas = document.getElementById('tch-kelas').value;
@@ -352,7 +361,6 @@
             container.innerHTML = html;
         }
 
-        // FUNGSI SIMPAN ULASAN KE GOOGLE SCRIPT
         async function saveUlasan(ic, form) {
             const ulasan = document.getElementById(`ulasan-${ic}`).value;
             const scriptUrl = config[form].script;
@@ -381,11 +389,11 @@
             const kelas = std[3] ? std[3].toUpperCase() : '';
 
             let html = `
-            <div class="slip-container page-break">
+            <div class="slip-container">
                 <div class="slip-header">
                     <img src="https://i.ibb.co/670hn3CB/smk-selirik.png" alt="Header SMK Selirik">
                 </div>
-                <h2 style="text-align:center; font-size:18px; margin: 15px 0 25px; text-decoration:underline;">SLIP KEPUTUSAN PEPERIKSAAN PERTENGAHAN 1 (MAC) 2026</h2>
+                <h2 style="text-align:center; font-size:16px; margin: 10px 0 15px; text-decoration:underline;">SLIP KEPUTUSAN PEPERIKSAAN PERTENGAHAN 1 (MAC) 2026</h2>
                 
                 <div class="slip-details">
                     <div>NAMA : ${std[2]}</div>
@@ -393,8 +401,8 @@
                     <div>NO. KAD PENGENALAN : ${std[1]}</div>
                 </div>
                 
-                <table style="margin-bottom: 25px;">
-                    <tr><th style="width:50%;">MATA PELAJARAN</th><th style="text-align:center;">MARKAH</th><th style="text-align:center;">GRED</th></tr>`;
+                <table class="slip-table" style="margin-bottom: 10px; width: 100%; border-collapse: collapse;">
+                    <tr><th style="width:60%; text-align:left;">MATA PELAJARAN</th><th style="text-align:center;">MARKAH</th><th style="text-align:center;">GRED</th></tr>`;
             
             sub.forEach(s => {
                 const mark = std[s.mark];
@@ -406,7 +414,7 @@
 
             html += `</table>
                 
-                <div style="margin-top:20px; font-weight:bold; font-size:14px; line-height:1.6;">
+                <div class="summary-box">
                     <p>JUMLAH MARKAH : ${std[sum.jum] || ''} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PURATA : ${std[sum.purata] || ''}</p>
                     <p>GRED PURATA (GP) : ${std[sum.gp] || ''} ${type==='upper' ? `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PNG : ${std[sum.png] || ''}` : ''}</p>
                     <p>KEDUDUKAN DALAM KELAS : ${std[sum.kdk] || ''} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DALAM TINGKATAN : ${std[sum.kdt] || ''}</p>
@@ -435,7 +443,7 @@
             return html;
         }
 
-        // FUNGSI MENCETAK
+        // MENCETAK SLIP INDIVIDU
         function printIndividual(ic, form) {
             const student = currentData.find(row => row[1] === ic);
             if(student) {
@@ -445,6 +453,7 @@
             }
         }
 
+        // MENCETAK SLIP PUKAL (SETIAP PELAJAR DI MUKA SURAT BARU)
         function printBulkSlips() {
             const form = document.getElementById('tch-tingkatan').value;
             const kelas = document.getElementById('tch-kelas').value;
@@ -455,9 +464,12 @@
 
             document.body.classList.remove('landscape-print');
             document.getElementById('print-area').innerHTML = html;
-            setTimeout(() => window.print(), 500);
+            
+            // Tunggu imej selesai dimuatkan sebelum mencetak
+            setTimeout(() => window.print(), 800);
         }
 
+        // MENCETAK JADUAL KESELURUHAN KELAS
         function printClassTable() {
             const form = document.getElementById('tch-tingkatan').value;
             const kelas = document.getElementById('tch-kelas').value;
@@ -467,21 +479,21 @@
             const sum = type === 'lower' ? summaryLower : summaryUpper;
 
             let html = `
-            <div class="page-break" style="padding:20px; font-family: Arial, sans-serif;">
+            <div style="padding:20px; font-family: Arial, sans-serif;">
                 <h2 style="text-align:center; font-size: 18px; text-transform: uppercase;">ANALISIS KEPUTUSAN KESELURUHAN KELAS ${kelas}</h2>
                 <h3 style="text-align:center; font-size: 14px; margin-top:-10px;">PEPERIKSAAN PERTENGAHAN 1 (MAC) 2026</h3>
-                <table style="font-size: 12px; width: 100%; margin-top: 20px;">
+                <table style="font-size: 12px; width: 100%; margin-top: 20px; border-collapse: collapse;" border="1">
                     <tr>
-                        <th style="width:3%;">Bil</th>
-                        <th>Nama</th>
-                        <th>No K/P</th>
-                        <th style="text-align:center;">Jum Markah</th>
-                        <th style="text-align:center;">Purata</th>
-                        <th style="text-align:center;">GP</th>
-                        ${type==='upper' ? `<th style="text-align:center;">PNG</th>` : ''}
-                        <th style="text-align:center;">KDK</th>
-                        <th style="text-align:center;">KDT</th>
-                        <th>Keputusan</th>
+                        <th style="width:3%; padding: 5px;">Bil</th>
+                        <th style="padding: 5px;">Nama</th>
+                        <th style="padding: 5px;">No K/P</th>
+                        <th style="text-align:center; padding: 5px;">Jum Markah</th>
+                        <th style="text-align:center; padding: 5px;">Purata</th>
+                        <th style="text-align:center; padding: 5px;">GP</th>
+                        ${type==='upper' ? `<th style="text-align:center; padding: 5px;">PNG</th>` : ''}
+                        <th style="text-align:center; padding: 5px;">KDK</th>
+                        <th style="text-align:center; padding: 5px;">KDT</th>
+                        <th style="padding: 5px;">Keputusan</th>
                     </tr>`;
             
             students.sort((a, b) => {
@@ -492,23 +504,23 @@
 
             students.forEach((std, idx) => {
                 html += `<tr>
-                    <td style="text-align:center;">${idx+1}</td>
-                    <td><b>${std[2]}</b></td>
-                    <td>${std[1]}</td>
-                    <td style="text-align:center;">${std[sum.jum] || ''}</td>
-                    <td style="text-align:center;">${std[sum.purata] || ''}</td>
-                    <td style="text-align:center;">${std[sum.gp] || ''}</td>
-                    ${type==='upper' ? `<td style="text-align:center;">${std[sum.png] || ''}</td>` : ''}
-                    <td style="text-align:center;">${std[sum.kdk] || ''}</td>
-                    <td style="text-align:center;">${std[sum.kdt] || ''}</td>
-                    <td>${std[sum.kep] || ''}</td>
+                    <td style="text-align:center; padding: 5px;">${idx+1}</td>
+                    <td style="padding: 5px;"><b>${std[2]}</b></td>
+                    <td style="padding: 5px;">${std[1]}</td>
+                    <td style="text-align:center; padding: 5px;">${std[sum.jum] || ''}</td>
+                    <td style="text-align:center; padding: 5px;">${std[sum.purata] || ''}</td>
+                    <td style="text-align:center; padding: 5px;">${std[sum.gp] || ''}</td>
+                    ${type==='upper' ? `<td style="text-align:center; padding: 5px;">${std[sum.png] || ''}</td>` : ''}
+                    <td style="text-align:center; padding: 5px;">${std[sum.kdk] || ''}</td>
+                    <td style="text-align:center; padding: 5px;">${std[sum.kdt] || ''}</td>
+                    <td style="padding: 5px;">${std[sum.kep] || ''}</td>
                 </tr>`;
             });
             html += `</table></div>`;
 
             document.body.classList.add('landscape-print');
             document.getElementById('print-area').innerHTML = html;
-            setTimeout(() => window.print(), 200);
+            setTimeout(() => window.print(), 300);
         }
     </script>
 </body>
