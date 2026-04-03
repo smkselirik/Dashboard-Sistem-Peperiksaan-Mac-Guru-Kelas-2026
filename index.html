@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Guru Tingkatan- SMK SELIRIK</title>
+    <title>Dashboard Guru - SMK SELIRIK</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
@@ -122,36 +122,72 @@
         #login-section { max-width: 400px; margin: 100px auto; text-align: center; }
         #login-section input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; }
 
-        /* Print Media Styles */
+        /* =========================================
+           PRINT MEDIA STYLES (SUSUN ATUR KEMAS & CANTIK)
+           ========================================= */
         @media print {
             @page { margin: 10mm; size: A4 portrait; }
-            body { background: white !important; font-size: 11pt; color: black; -webkit-print-color-adjust: exact; }
+            body { background: white !important; color: black; -webkit-print-color-adjust: exact; }
             #login-section, header, .card:not(#print-area), .action-buttons, footer, .controls-group { display: none !important; }
             #dashboard { display: block; }
-            #print-area { display: block !important; padding: 0; box-shadow: none; border: none; }
+            #print-area { display: block !important; padding: 0; }
             
-            .page-break { page-break-after: always; padding-top: 0; position: relative; }
+            .page-break { page-break-after: always; padding-top: 0; position: relative; font-family: 'Arial', sans-serif; }
             
-            .slip-header { width: 100%; margin-bottom: 15px; display: block; }
+            .slip-header { width: 100%; display: block; }
             .slip-header img { width: 100%; height: auto; max-height: 180px; object-fit: contain; display: block; margin: 0 auto; }
             
-            .slip-title { text-align: center; font-size: 13pt; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; border-bottom: 2px solid black; padding-bottom: 8px;}
+            .slip-title { 
+                text-align: center; 
+                font-size: 14pt; 
+                font-weight: bold; 
+                margin: 15px 0 20px 0; 
+                text-transform: uppercase; 
+                background: #f1f5f9;
+                border-top: 2px solid #1e293b;
+                border-bottom: 2px solid #1e293b;
+                padding: 10px;
+                letter-spacing: 1px;
+            }
             
-            .student-info { margin-bottom: 20px; font-size: 12pt; }
-            .student-info th { background: none; color: black; text-align: left; width: 120px; border: none; padding: 4px 0; font-weight: bold; }
-            .student-info td { border: none; padding: 4px 0; text-align: left; }
+            .student-info { width: 100%; margin-bottom: 20px; font-size: 11pt; border-collapse: collapse; }
+            .student-info td { padding: 4px 0; vertical-align: top; border: none; text-align: left; }
+            .col-label { width: 18%; font-weight: bold; }
+            .col-colon { width: 2%; font-weight: bold; text-align: center !important; }
+            .col-value { width: 80%; font-weight: bold; }
             
-            .marks-table th { background: #eee !important; color: black !important; font-weight: bold; }
-            .marks-table th, .marks-table td { border: 1px solid #000; padding: 8px; }
+            .marks-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 11pt; }
+            .marks-table th { background-color: #e2e8f0 !important; color: #000 !important; padding: 10px; border: 1px solid #64748b; font-weight: bold; text-align: center; }
+            .marks-table td { border: 1px solid #64748b; padding: 8px 10px; text-align: center; }
+            .marks-table td.subject-name { text-align: left; font-weight: bold; }
             
-            .summary-box { border: 1px solid #000; padding: 15px; margin-top: 20px; background: #fafafa; }
-            .summary-box p { margin-bottom: 8px; }
+            .summary-box { 
+                border: 2px solid #64748b; 
+                border-radius: 8px; 
+                padding: 15px 20px; 
+                margin-top: 10px; 
+                background: #f8fafc; 
+                page-break-inside: avoid;
+            }
+            .summary-title { font-weight: bold; font-size: 12pt; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #cbd5e1; padding-bottom: 5px; }
+            
+            .summary-table { width: 100%; border: none; line-height: 1.8; font-size: 11pt; }
+            .summary-table td { border: none; padding: 2px 0; text-align: left; }
+            
+            .ulasan-section {
+                margin-top: 15px; 
+                padding: 12px 15px; 
+                background: #ffffff; 
+                border-left: 4px solid #1e293b; 
+                border-radius: 0 6px 6px 0;
+                box-shadow: inset 0 0 0 1px #e2e8f0;
+            }
+            .ulasan-section p { margin-bottom: 5px; font-size: 10.5pt;}
             
             .signatures { margin-top: 50px; display: flex; justify-content: space-between; page-break-inside: avoid; }
-            .sign-box { text-align: center; width: 40%; }
-            .sign-line { border-top: 1px solid black; margin-top: 70px; padding-top: 5px; font-weight: bold; }
+            .sign-box { text-align: center; width: 40%; font-size: 11pt; }
+            .sign-line { border-top: 1px solid black; margin-top: 60px; padding-top: 8px; font-weight: bold; text-transform: uppercase; }
         }
-        #print-area { display: none; }
     </style>
 </head>
 <body>
@@ -340,7 +376,6 @@
         const subjects = getSubjectsForClass(ting, kelas);
         const colIdx = (ting <= 3) ? {j:54, p:55, g:56, k:58, u:60} : {j:78, p:79, g:80, k:83, u:74};
         
-        // KIRAAN PELAJAR SAH DALAM KELAS (Elak baris kosong)
         const validDalamKelas = filteredData.filter(r => r[colIdx.j] && r[colIdx.j] !== '0' && r[colIdx.j] !== 'NULL' && r[colIdx.j] !== '').length;
 
         let html = `<table><thead><tr><th class="col-nama">NAMA PELAJAR</th>`;
@@ -350,7 +385,6 @@
         filteredData.forEach((row, idx) => {
             if(!row[colIdx.j] || row[colIdx.j] === '0' || row[colIdx.j] === '' || row[colIdx.j] === 'NULL') return;
 
-            // Bersihkan KDK jika dari CSV dah memang ada simbol pecahan '/'
             let kdkBersih = (row[colIdx.k] || '-').toString().split('/')[0].trim();
 
             html += `<tr><td class="col-nama">${row[2]}</td>`;
@@ -417,8 +451,8 @@
         const kelas = document.getElementById('select-kelas').value;
         document.getElementById('print-area').innerHTML = `
             <div class="slip-header"><img src="https://i.ibb.co/670hn3CB/smk-selirik.png"></div>
-            <div class="slip-title">REKOD KEPUTUSAN KESELURUHAN - KELAS ${kelas}</div>
-            <div style="font-size: 10pt;">${content.replace(/class="ulasan-select"/g, 'disabled style="border:none; appearance:none; background:transparent;"')}</div>
+            <div class="slip-title" style="font-size: 16pt;">REKOD KEPUTUSAN KESELURUHAN - KELAS ${kelas}</div>
+            <div style="font-size: 10pt;">${content.replace(/class="ulasan-select"/g, 'disabled style="border:none; appearance:none; background:transparent; color:#000;"')}</div>
         `;
         window.print();
     }
@@ -429,7 +463,6 @@
         const subjects = getSubjectsForClass(ting, kelas);
         const col = (ting <= 3) ? {j:54, p:55, g:56, a:57, kp:58, kd:70, u:60, gt:71} : {j:78, p:79, g:80, a:81, kp:83, kd:101, u:74, gt:102};
         
-        // KIRAAN PELAJAR SAH KELAS & TINGKATAN (MENGABAIKAN BARIS KOSONG)
         const validDalamKelas = filteredData.filter(r => r[col.j] && r[col.j] !== '0' && r[col.j] !== 'NULL' && r[col.j] !== '').length;
         const validDalamTingkatan = allData.filter(r => r[col.j] && r[col.j] !== '0' && r[col.j] !== 'NULL' && r[col.j] !== '' && r[2] && r[2].toUpperCase() !== 'NAMA').length;
 
@@ -440,30 +473,48 @@
             if(!row[col.j] || row[col.j] === '0' || row[col.j] === 'NULL' || row[col.j] === '') return;
             
             let ulasanAkhir = changedData[row[2]] || storedData[row[2]] || row[col.u] || '-';
-            
-            // Bersihkan format sekiranya Master CSV sudah menghantar dalam bentuk "Rank / Total"
             let kdkBersih = (row[col.kp] || '-').toString().split('/')[0].trim();
             let kdtBersih = (row[col.kd] || '-').toString().split('/')[0].trim();
 
             html += `
             <div class="page-break">
                 <div class="slip-header"><img src="https://i.ibb.co/670hn3CB/smk-selirik.png"></div>
+                
                 <div class="slip-title">SLIP KEPUTUSAN PEPERIKSAAN MAC 2026</div>
                 
                 <table class="student-info">
-                    <tr><th>NAMA PELAJAR</th><td>: <b>${row[2]}</b></td></tr>
-                    <tr><th>KELAS</th><td>: <b>${row[3]}</b></td></tr>
+                    <tr>
+                        <td class="col-label">NAMA PELAJAR</td>
+                        <td class="col-colon">:</td>
+                        <td class="col-value">${row[2]}</td>
+                    </tr>
+                    <tr>
+                        <td class="col-label">TINGKATAN/KELAS</td>
+                        <td class="col-colon">:</td>
+                        <td class="col-value">${row[3]}</td>
+                    </tr>
                 </table>
 
-                <table class="marks-table" style="width:100%; text-align:center;">
-                    <thead><tr><th style="text-align:left;">MATA PELAJARAN</th><th>MARKAH</th><th>GRED</th></tr></thead>
+                <table class="marks-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left; width: 50%;">MATA PELAJARAN</th>
+                            <th style="width: 25%;">MARKAH</th>
+                            <th style="width: 25%;">GRED</th>
+                        </tr>
+                    </thead>
                     <tbody>`;
             
             subjects.forEach(s => {
                 const m = row[s.m] && row[s.m] !== 'NULL' ? row[s.m] : '-';
                 const g = row[s.g] && row[s.g] !== 'NULL' ? row[s.g] : '-';
                 if(m !== '-') {
-                    html += `<tr><td style="text-align:left; font-weight:600;">${s.n}</td><td>${m}</td><td>${g}</td></tr>`;
+                    html += `
+                        <tr>
+                            <td class="subject-name">${s.n}</td>
+                            <td>${m}</td>
+                            <td>${g}</td>
+                        </tr>`;
                 }
             });
 
@@ -472,18 +523,31 @@
                 </table>
 
                 <div class="summary-box">
-                    <p><b>RUMUSAN KEPUTUSAN</b></p>
-                    <table style="width:100%; border:none;">
-                        <tr><td style="border:none; text-align:left; width:25%;">JUMLAH MARKAH</td><td style="border:none; text-align:left; width:25%;">: <b>${row[col.j]}</b></td>
-                            <td style="border:none; text-align:left; width:25%;">GRED PURATA</td><td style="border:none; text-align:left; width:25%;">: <b>${row[col.g]}</b></td></tr>
-                        <tr><td style="border:none; text-align:left;">PERATUS</td><td style="border:none; text-align:left;">: <b>${row[col.p]}%</b></td>
-                            <td style="border:none; text-align:left;">KEPUTUSAN</td><td style="border:none; text-align:left;">: <b>${row[col.a]}</b></td></tr>
-                        <tr><td style="border:none; text-align:left;">KDK</td><td style="border:none; text-align:left;">: <b>${kdkBersih} / ${validDalamKelas}</b></td>
-                            <td style="border:none; text-align:left;">KDT</td><td style="border:none; text-align:left;">: <b>${kdtBersih} / ${validDalamTingkatan}</b></td></tr>
+                    <div class="summary-title">RUMUSAN KEPUTUSAN</div>
+                    <table class="summary-table">
+                        <tr>
+                            <td style="width:20%; font-weight:bold;">JUMLAH MARKAH</td>
+                            <td style="width:30%;">: <b>${row[col.j]}</b></td>
+                            <td style="width:20%; font-weight:bold;">GRED PURATA</td>
+                            <td style="width:30%;">: <b>${row[col.g]}</b></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:bold;">PERATUS</td>
+                            <td>: <b>${row[col.p]}%</b></td>
+                            <td style="font-weight:bold;">KEPUTUSAN</td>
+                            <td>: <b>${row[col.a]}</b></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:bold;">KED. KELAS</td>
+                            <td>: <b>${kdkBersih} / ${validDalamKelas}</b></td>
+                            <td style="font-weight:bold;">KED. TINGKATAN</td>
+                            <td>: <b>${kdtBersih} / ${validDalamTingkatan}</b></td>
+                        </tr>
                     </table>
-                    <div style="margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px;">
-                        <p style="margin-bottom:0;"><b>ULASAN GURU KELAS:</b></p>
-                        <p style="font-style: italic;">"${ulasanAkhir}"</p>
+
+                    <div class="ulasan-section">
+                        <p style="font-weight:bold; color: #1e293b;">ULASAN GURU KELAS:</p>
+                        <p style="font-style: italic; color: #334155;">"${ulasanAkhir}"</p>
                     </div>
                 </div>
 
