@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Guru Tingkatan - SMK SELIRIK</title>
+    <title>Dashboard Guru Tingkatan- SMK SELIRIK</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
@@ -122,11 +122,8 @@
         #login-section { max-width: 400px; margin: 100px auto; text-align: center; }
         #login-section input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; }
 
-        /* =========================================
-           PRINT MEDIA STYLES (DIKEMAS KINI)
-           ========================================= */
+        /* Print Media Styles */
         @media print {
-            /* Margin 10mm untuk beri ruang lebih luas pada header surat */
             @page { margin: 10mm; size: A4 portrait; }
             body { background: white !important; font-size: 11pt; color: black; -webkit-print-color-adjust: exact; }
             #login-section, header, .card:not(#print-area), .action-buttons, footer, .controls-group { display: none !important; }
@@ -135,30 +132,10 @@
             
             .page-break { page-break-after: always; padding-top: 0; position: relative; }
             
-            /* Susun atur Header Dokumen yang mengisi ruang atas sepenuhnya */
-            .slip-header { 
-                width: 100%; 
-                margin-bottom: 15px; 
-                display: block;
-            }
-            .slip-header img { 
-                width: 100%; /* Memenuhi ruangan kiri ke kanan */
-                height: auto; 
-                max-height: 180px; /* Mengelakkan imej terlalu labuh jika resolusi asal terlalu tinggi */
-                object-fit: contain; 
-                display: block; 
-                margin: 0 auto;
-            }
+            .slip-header { width: 100%; margin-bottom: 15px; display: block; }
+            .slip-header img { width: 100%; height: auto; max-height: 180px; object-fit: contain; display: block; margin: 0 auto; }
             
-            .slip-title { 
-                text-align: center; 
-                font-size: 13pt; 
-                font-weight: bold; 
-                margin-bottom: 20px; 
-                text-transform: uppercase; 
-                border-bottom: 2px solid black; 
-                padding-bottom: 8px;
-            }
+            .slip-title { text-align: center; font-size: 13pt; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; border-bottom: 2px solid black; padding-bottom: 8px;}
             
             .student-info { margin-bottom: 20px; font-size: 12pt; }
             .student-info th { background: none; color: black; text-align: left; width: 120px; border: none; padding: 4px 0; font-weight: bold; }
@@ -216,7 +193,7 @@
             <h3 id="table-title" style="margin-bottom: 15px; color: var(--night-blue); border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">Paparan Markah Kelas</h3>
             
             <div class="table-responsive" id="table-container">
-                </div>
+            </div>
 
             <div class="action-buttons no-print">
                 <button class="btn-primary" onclick="printOverall()">🖨️ Cetak Jadual Kelas</button>
@@ -363,12 +340,18 @@
         const subjects = getSubjectsForClass(ting, kelas);
         const colIdx = (ting <= 3) ? {j:54, p:55, g:56, k:58, u:60} : {j:78, p:79, g:80, k:83, u:74};
         
+        // KIRAAN PELAJAR SAH DALAM KELAS (Elak baris kosong)
+        const validDalamKelas = filteredData.filter(r => r[colIdx.j] && r[colIdx.j] !== '0' && r[colIdx.j] !== 'NULL' && r[colIdx.j] !== '').length;
+
         let html = `<table><thead><tr><th class="col-nama">NAMA PELAJAR</th>`;
         subjects.forEach(s => html += `<th>${s.n}</th>`);
         html += `<th>JUM</th><th>PURATA</th><th>GP</th><th>KDK</th><th>ULASAN GURU KELAS</th></tr></thead><tbody>`;
 
         filteredData.forEach((row, idx) => {
             if(!row[colIdx.j] || row[colIdx.j] === '0' || row[colIdx.j] === '' || row[colIdx.j] === 'NULL') return;
+
+            // Bersihkan KDK jika dari CSV dah memang ada simbol pecahan '/'
+            let kdkBersih = (row[colIdx.k] || '-').toString().split('/')[0].trim();
 
             html += `<tr><td class="col-nama">${row[2]}</td>`;
             subjects.forEach(s => {
@@ -377,7 +360,7 @@
                 html += `<td><strong>${mark}</strong><br><small>${grade}</small></td>`;
             });
 
-            html += `<td>${row[colIdx.j]}</td><td>${row[colIdx.p]}</td><td>${row[colIdx.g]}</td><td>${row[colIdx.k]}</td>`;
+            html += `<td>${row[colIdx.j]}</td><td>${row[colIdx.p]}</td><td>${row[colIdx.g]}</td><td>${kdkBersih} / ${validDalamKelas}</td>`;
             
             let storedData = JSON.parse(localStorage.getItem('saved_ulasan') || '{}');
             let currentUlasan = changedData[row[2]] || storedData[row[2]] || row[colIdx.u];
@@ -429,7 +412,6 @@
         }
     }
 
-    // FUNGSI CETAKAN
     function printOverall() {
         const content = document.getElementById('table-container').innerHTML;
         const kelas = document.getElementById('select-kelas').value;
@@ -447,13 +429,21 @@
         const subjects = getSubjectsForClass(ting, kelas);
         const col = (ting <= 3) ? {j:54, p:55, g:56, a:57, kp:58, kd:70, u:60, gt:71} : {j:78, p:79, g:80, a:81, kp:83, kd:101, u:74, gt:102};
         
+        // KIRAAN PELAJAR SAH KELAS & TINGKATAN (MENGABAIKAN BARIS KOSONG)
+        const validDalamKelas = filteredData.filter(r => r[col.j] && r[col.j] !== '0' && r[col.j] !== 'NULL' && r[col.j] !== '').length;
+        const validDalamTingkatan = allData.filter(r => r[col.j] && r[col.j] !== '0' && r[col.j] !== 'NULL' && r[col.j] !== '' && r[2] && r[2].toUpperCase() !== 'NAMA').length;
+
         let storedData = JSON.parse(localStorage.getItem('saved_ulasan') || '{}');
         let html = "";
 
         filteredData.forEach(row => {
-            if(!row[col.j] || row[col.j] === '0' || row[col.j] === 'NULL') return;
+            if(!row[col.j] || row[col.j] === '0' || row[col.j] === 'NULL' || row[col.j] === '') return;
             
             let ulasanAkhir = changedData[row[2]] || storedData[row[2]] || row[col.u] || '-';
+            
+            // Bersihkan format sekiranya Master CSV sudah menghantar dalam bentuk "Rank / Total"
+            let kdkBersih = (row[col.kp] || '-').toString().split('/')[0].trim();
+            let kdtBersih = (row[col.kd] || '-').toString().split('/')[0].trim();
 
             html += `
             <div class="page-break">
@@ -488,8 +478,8 @@
                             <td style="border:none; text-align:left; width:25%;">GRED PURATA</td><td style="border:none; text-align:left; width:25%;">: <b>${row[col.g]}</b></td></tr>
                         <tr><td style="border:none; text-align:left;">PERATUS</td><td style="border:none; text-align:left;">: <b>${row[col.p]}%</b></td>
                             <td style="border:none; text-align:left;">KEPUTUSAN</td><td style="border:none; text-align:left;">: <b>${row[col.a]}</b></td></tr>
-                        <tr><td style="border:none; text-align:left;">KDK</td><td style="border:none; text-align:left;">: <b>${row[col.kp]} / ${filteredData.length}</b></td>
-                            <td style="border:none; text-align:left;">KDT</td><td style="border:none; text-align:left;">: <b>${row[col.kd] || '-'}</b></td></tr>
+                        <tr><td style="border:none; text-align:left;">KDK</td><td style="border:none; text-align:left;">: <b>${kdkBersih} / ${validDalamKelas}</b></td>
+                            <td style="border:none; text-align:left;">KDT</td><td style="border:none; text-align:left;">: <b>${kdtBersih} / ${validDalamTingkatan}</b></td></tr>
                     </table>
                     <div style="margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px;">
                         <p style="margin-bottom:0;"><b>ULASAN GURU KELAS:</b></p>
