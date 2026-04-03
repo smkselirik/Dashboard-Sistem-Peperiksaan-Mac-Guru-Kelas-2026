@@ -3,189 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Guru Kelas - Peperiksaan SMK Selirik 2026</title>
+    <title>Dashboard Markah Peperiksaan Mac 2026 - SMK SELIRIK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         :root {
             --night-blue: #151B54;
-            --soft-blue: #a1c4fd;
-            --soft-blue-light: #c2e9fb;
+            --soft-blue-grad: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            --white: #ffffff;
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
         body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--soft-blue) 0%, var(--soft-blue-light) 100%);
+            background: var(--soft-blue-grad);
             min-height: 100vh;
             color: #333;
         }
 
-        /* Header Night Blue dengan Corak Abstrak Korporat Elegant */
+        /* Header & Logo */
         header {
             background-color: var(--night-blue);
-            background-image: 
-                linear-gradient(30deg, rgba(255,255,255,0.03) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.03) 87.5%, rgba(255,255,255,0.03)),
-                linear-gradient(150deg, rgba(255,255,255,0.03) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.03) 87.5%, rgba(255,255,255,0.03)),
-                linear-gradient(60deg, rgba(255,255,255,0.02) 25%, transparent 25.5%, transparent 75%, rgba(255,255,255,0.02) 75%, rgba(255,255,255,0.02));
-            background-size: 80px 140px;
+            background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png'); /* Pattern abstrak korporat */
             color: white;
+            padding: 20px;
             text-align: center;
-            padding: 25px 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            position: relative;
+            border-bottom: 5px solid #ffd700;
         }
 
-        .logo { width: 90px; height: auto; margin-bottom: 10px; filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.3)); }
-        header h1 { margin: 5px 0; font-size: 26px; font-weight: 700; letter-spacing: 1px; }
-        header p { margin: 0; font-size: 16px; opacity: 0.9; font-weight: 300; }
+        header img { width: 80px; margin-bottom: 10px; }
+        header h1 { font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; }
+        header p { font-size: 0.9rem; opacity: 0.9; }
 
-        .container {
-            max-width: 1100px; margin: -20px auto 30px; background: white; padding: 30px;
-            border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; z-index: 10;
+        .container { max-width: 1200px; margin: 20px auto; padding: 20px; text-align: center; }
+
+        /* Login Section */
+        #login-section {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin: 50px auto;
         }
 
-        @media (max-width: 768px) { .container { margin: 15px; padding: 20px; } }
-
-        .portal-title { color: var(--night-blue); text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #eee; }
-
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #444; font-size: 14px; }
-        .form-group input, .form-group select {
-            width: 100%; padding: 12px; border: 1px solid #ccd0d5; border-radius: 8px; box-sizing: border-box; font-size: 15px; transition: border 0.3s;
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
         }
-        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--night-blue); box-shadow: 0 0 0 3px rgba(21, 27, 84, 0.1); }
 
-        .btn {
-            background: var(--night-blue); color: white; padding: 14px 20px; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; margin-top: 10px; transition: 0.2s;
+        button {
+            background: var(--night-blue);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+            margin: 5px;
         }
-        .btn:hover { background: #232c7b; }
-        .btn:active { transform: scale(0.98); }
-        
-        .action-bar { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #eee; }
-        
-        .btn-secondary { background: #4CAF50; padding: 12px 15px; font-size: 14px; font-weight:bold; color: white; border:none; border-radius:8px; cursor: pointer; transition: 0.2s; flex: 1; min-width: 200px;}
-        .btn-secondary:hover { opacity: 0.9; }
-        .btn-logout { background: #f44336; padding: 10px 20px; font-size: 14px; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;}
-        .btn-logout:hover { background: #d32f2f; }
-        .btn-save { background: #ff9800; padding: 12px 15px; font-size: 14px; font-weight: bold; color: white; border:none; border-radius:8px; cursor:pointer; flex: 1; min-width: 200px;}
-        .btn-save:hover { background: #e68a00; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 13px; }
-        table, th, td { border: 1px solid #e0e0e0; }
-        th, td { padding: 10px 8px; text-align: left; }
-        th { background-color: var(--night-blue); color: white; font-weight: 600; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
 
-        .footer { text-align: center; padding: 20px; margin-top: 20px; font-size: 14px; color: #555; font-weight: 500; }
-        .hidden { display: none !important; }
+        button:hover { opacity: 0.9; transform: translateY(-2px); }
 
-        /* Slip Styles */
-        .slip-container { border: 2px solid #333; padding: 30px; background: white; box-sizing: border-box; font-family: 'Arial', sans-serif; margin-bottom: 20px; }
-        .slip-header img { width: 100%; height: auto; border-bottom: 3px solid #111; padding-bottom: 10px; margin-bottom: 15px; }
-        .slip-details { display: flex; flex-wrap: wrap; justify-content: space-between; margin-bottom: 15px; font-weight: bold; font-size: 14px; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
-        .slip-details div { width: 48%; margin-bottom: 5px; }
-        .slip-table th, .slip-table td { padding: 6px 10px; font-size: 13px; border: 1px solid #333; }
-        .slip-table th { background-color: #f0f0f0 !important; color: #000; }
-        .summary-box { margin-top:15px; font-weight:bold; font-size:13px; line-height:1.5; }
-        .signature-area { display: flex; justify-content: space-between; margin-top: 35px; font-size: 13px; }
-        .signature-area .left-sign, .signature-area .right-sign { width: 45%; text-align: left; }
-        .signature-area p { margin: 3px 0; }
-        #loading { text-align: center; font-weight: bold; color: var(--night-blue); margin: 20px 0; padding: 20px; background: #eef2fa; border-radius: 8px; }
-        .ulasan-select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px;}
+        /* Dashboard Section */
+        #dashboard { display: none; }
 
-        /* Print Media Queries */
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.85rem;
+        }
+
+        th, td {
+            border: 1px solid #eee;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th { background: var(--night-blue); color: white; }
+        tr:nth-child(even) { background: #f9f9f9; }
+
+        /* Ulasan Dropdown */
+        .ulasan-select { width: auto; font-size: 0.8rem; }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 40px;
+        }
+
+        /* Print Styles */
         @media print {
-            body * { visibility: hidden; }
-            #print-area, #print-area * { visibility: visible; }
-            #print-area { position: absolute; left: 0; top: 0; width: 100%; }
-            body { background: white; margin: 0; padding: 0; }
-            @page { size: A4 portrait; margin: 10mm; }
-            body.landscape-print @page { size: A4 landscape; margin: 8mm; }
-            .no-print { display: none !important; }
-            .slip-container { border: none; padding: 0; margin: 0; page-break-after: always; page-break-inside: avoid; width: 100%; }
-            .slip-container:last-child { page-break-after: auto; }
-            .master-table { width: 100%; border-collapse: collapse; font-size: 9px; }
-            .master-table th, .master-table td { border: 1px solid #000; padding: 4px 2px; color: #000; }
-            .master-table th { background-color: #e0e0e0 !important; font-weight: bold; text-align: center;}
+            body { background: white; }
+            #dashboard, #login-section, header, footer, .no-print { display: none !important; }
+            #print-area { display: block !important; }
+            .page-break { page-break-after: always; }
+            .slip-header { width: 100%; margin-bottom: 20px; }
+            .slip-header img { width: 100%; }
+        }
+
+        #print-area { display: none; padding: 20px; background: white; }
+
+        /* Mobile Friendly */
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.1rem; }
+            .container { padding: 10px; }
+            table { font-size: 0.7rem; }
         }
     </style>
 </head>
 <body>
 
-    <header class="no-print">
-        <img src="https://i.ibb.co/VYSKMXf1/Logo-Selirik.png" alt="Logo SMK Selirik" class="logo">
-        <h1>SMK SELIRIK, KAPIT</h1>
-        <p>Peperiksaan Pertengahan 1 (Mac) 2026</p>
-    </header>
+<header>
+    <img src="https://i.ibb.co/fYyZdyLz/Logo-Selirik.png" alt="Logo SMK Selirik">
+    <h1>SMK SELIRIK, KAPIT</h1>
+    <p>DASHBOARD MARKAH PEPERIKSAAN MAC 2026</p>
+</header>
 
-    <div class="container no-print">
-        <div id="loading" class="hidden">Sedang memproses... Sila tunggu sebentar.</div>
+<div class="container">
+    <div id="login-section">
+        <h3>Log Masuk Guru Tingkatan</h3>
+        <input type="text" id="username" placeholder="ID: GT2026">
+        <input type="password" id="password" placeholder="Kata Laluan">
+        <button onclick="login()">Log Masuk</button>
+        <p id="login-err" style="color:red; font-size:0.8rem; margin-top:10px;"></p>
+    </div>
 
-        <div id="teacher-login">
-            <h2 class="portal-title">Log Masuk Guru Kelas</h2>
-            <div class="form-group">
-                <label>ID Pengguna</label>
-                <input type="text" id="tch-id" placeholder="Masukkan ID Pengguna">
+    <div id="dashboard">
+        <div class="card no-print">
+            <h4>Pilih Tingkatan & Kelas</h4>
+            <select id="select-tingkatan" onchange="loadClasses()">
+                <option value="">-- Pilih Tingkatan --</option>
+                <option value="1">Tingkatan 1</option>
+                <option value="2">Tingkatan 2</option>
+                <option value="3">Tingkatan 3</option>
+                <option value="4">Tingkatan 4</option>
+                <option value="5">Tingkatan 5</option>
+            </select>
+            <select id="select-kelas" onchange="filterData()">
+                <option value="">-- Pilih Kelas --</option>
+            </select>
+            <div style="margin-top: 10px;">
+                <button onclick="saveToLocal()">Simpan (Local)</button>
+                <button onclick="logout()">Keluar</button>
             </div>
-            <div class="form-group">
-                <label>Kata Laluan</label>
-                <input type="password" id="tch-pass" placeholder="Masukkan Kata Laluan">
-            </div>
-            <button class="btn" onclick="teacherLogin()">Log Masuk Portal</button>
         </div>
 
-        <div id="teacher-dashboard" class="hidden">
-            <div class="action-bar">
-                <h2 style="margin:0; color: var(--night-blue); font-size: 18px;">Papan Pemuka Guru Tingkatan</h2>
-                <button class="btn-logout" onclick="logout()">Keluar</button>
+        <div id="summary-stats" class="card no-print" style="display:none;">
             </div>
-            
-            <div class="form-group">
-                <label>Pilih Tingkatan</label>
-                <select id="tch-tingkatan" onchange="fetchClassesForTeacher()">
-                    <option value="">-- Pilih Tingkatan --</option>
-                    <option value="1">Tingkatan 1</option>
-                    <option value="2">Tingkatan 2</option>
-                    <option value="3">Tingkatan 3</option>
-                    <option value="4">Tingkatan 4</option>
-                    <option value="5">Tingkatan 5</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Pilih Kelas</label>
-                <select id="tch-kelas" onchange="loadClassData()">
-                    <option value="">-- Sila Pilih Tingkatan Dahulu --</option>
-                </select>
-            </div>
-            
-            <div id="class-controls" class="hidden" style="margin-top: 25px;">
-                <div id="student-list-container" style="overflow-x: auto; margin-bottom: 25px;"></div>
-                
-                <div style="display: flex; gap: 15px; flex-wrap: wrap; border-top: 2px solid #eee; padding-top: 20px;">
-                    <button class="btn-save" onclick="saveAllUlasan()">💾 Simpan Ke Pangkalan Data ('MASTER')</button>
-                    <button class="btn-secondary" style="background:#009688;" onclick="printClassTable()">🖨️ Cetak Keputusan Keseluruhan Kelas</button>
-                    <button class="btn-secondary" style="background:#2196F3;" onclick="printBulkSlips()">📑 Cetak Pukal Slip Keputusan</button>
+
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom:10px;">
+                <h4 id="table-title">Rekod Markah Keseluruhan</h4>
+                <div class="no-print">
+                    <button onclick="printOverall()">Cetak Jadual Kelas</button>
+                    <button onclick="printBulkSlips()">Cetak Slip Pukal</button>
                 </div>
             </div>
+            <div id="table-container">
+                <p>Sila pilih kelas untuk memaparkan data.</p>
+            </div>
         </div>
     </div>
+</div>
 
-    <div id="print-area"></div>
+<div id="print-area"></div>
 
-    <div class="footer no-print">
-        &copy; Hakcipta NDJE@Selirik, Kapit 2026
-    </div>
+<footer>
+    hakcipta NDJE@Selirik, Kapit 2026
+</footer>
 
-    <script>
-        // KONFIGURASI PANGKALAN DATA URL
-        const config = {
-            1: { sheet: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS9ngcL37KMX8ZDsGKomo7Lv6yowNqFdcWciJuvS1UkUU6aFHI_VKuFDLP1d0fKtMlXTW8APMYD38xZ/pub?gid=1419213935&single=true&output=csv", script: "https://script.google.com/macros/s/AKfycbzI4uyIyKd5O0do0KQRbdjuzay3OMUBpN0EuJCOtbcAI4dAmh0Fj_n_CTsCX9mwdeNsEg/exec", type: "lower" },
-            2: { sheet: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSD6QwXil_0_gA0OBb2t82FneuCt68Sp7P9-He4zyBPEoaVHkJent8hiCSFPa33F-AEmR9BgeEogpt-/pub?gid=1419213935&single=true&output=csv", script: "https://script.google.com/macros/s/AKfycbw0BakCGDqNheCPyzdqrstH8jM0Je3D1fM2oJTB0odH5UIAO08GNdOSIqWMK6e1ZQmL/exec", type: "lower" },
-            3: { sheet: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQg40cTCNS7MVyZVA3-8sZkbNtVT_Db9abxz6xhv1ccZ5ZksWIy0qyn8y30lqxG9G9YN1TOMBXF7WCY/pub?gid=1419213935&single=true&output=csv", script: "https://script.google.com/macros/s/AKfycbwGVcnpPo2ASHnvXyvfCB2PQSYi9XtITDEF6YGC7G0idbXmw13TixmF02846I2593dH/exec", type: "lower" },
-            4: { sheet: "https://docs.google.com/spreadsheets/d/e/2PACX-1vR831uDWcPfxf9zOj-mekolv_DMkdsYRMdVsxoLcKqwL88z-tetvP57ti5wB5M2dYIXYVZf9eX7R6Q8/pub?gid=1615224868&single=true&output=csv", script: "https://script.google.com/macros/s/AKfycbztn63Bhbjl6EKwvVFadcYNY3jzA0Nuty-_veEYQBkLenytXxQWZY5h7GweO3maDLn0/exec", type: "upper" },
-            5: { sheet: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRq9lzeK5sombRvA2WRgEYGygUdZwEfifZHVy4IMZiRD7c-yll60qkA4pXeBBocqJsRV6GpM1uazU_B/pub?gid=1615224868&single=true&output=csv", script: "https://script.google.com/macros/s/AKfycbxg5tGuWQ6U8Aou1tG-m5PXWEyfbfcq_maaL_W8awU35NiBf3v-7c8peqQMeBCIqIdUsQ/exec", type: "upper" }
-        };
-
-        const ulasanOptions = [
+<script>
+    const CONFIG = {
+        csvLinks: {
+            1: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS9ngcL37KMX8ZDsGKomo7Lv6yowNqFdcWciJuvS1UkUU6aFHI_VKuFDLP1d0fKtMlXTW8APMYD38xZ/pub?gid=1419213935&single=true&output=csv",
+            2: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSD6QwXil_0_gA0OBb2t82FneuCt68Sp7P9-He4zyBPEoaVHkJent8hiCSFPa33F-AEmR9BgeEogpt-/pub?gid=1419213935&single=true&output=csv",
+            3: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQg40cTCNS7MVyZVA3-8sZkbNtVT_Db9abxz6xhv1ccZ5ZksWIy0qyn8y30lqxG9G9YN1TOMBXF7WCY/pub?gid=1419213935&single=true&output=csv",
+            4: "https://docs.google.com/spreadsheets/d/e/2PACX-1vR831uDWcPfxf9zOj-mekolv_DMkdsYRMdVsxoLcKqwL88z-tetvP57ti5wB5M2dYIXYVZf9eX7R6Q8/pub?gid=1615224868&single=true&output=csv",
+            5: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRq9lzeK5sombRvA2WRgEYGygUdZwEfifZHVy4IMZiRD7c-yll60qkA4pXeBBocqJsRV6GpM1uazU_B/pub?gid=1615224868&single=true&output=csv"
+        },
+        scripts: {
+            1: "https://script.google.com/macros/s/AKfycbzI4uyIyKd5O0do0KQRbdjuzay3OMUBpN0EuJCOtbcAI4dAmh0Fj_n_CTsCX9mwdeNsEg/exec",
+            2: "https://script.google.com/macros/s/AKfycbw0BakCGDqNheCPyzdqrstH8jM0Je3D1fM2oJTB0odH5UIAO08GNdOSIqWMK6e1ZQmL/exec",
+            3: "https://script.google.com/macros/s/AKfycbwGVcnpPo2ASHnvXyvfCB2PQSYi9XtITDEF6YGC7G0idbXmw13TixmF02846I2593dH/exec",
+            4: "https://script.google.com/macros/s/AKfycbztn63Bhbjl6EKwvVFadcYNY3jzA0Nuty-_veEYQBkLenytXxQWZY5h7GweO3maDLn0/exec",
+            5: "https://script.google.com/macros/s/AKfycbxg5tGuWQ6U8Aou1tG-m5PXWEyfbfcq_maaL_W8awU35NiBf3v-7c8peqQMeBCIqIdUsQ/exec"
+        },
+        ulasanOptions: [
             "Teruskan berusaha untuk kejayaan lebih cemerlang untuk masa depan yang gemilang",
             "Sekalung tahniah atas kejayaan anda. Teruskan Usaha dengan lebih gigih untuk kejayaan lebih baik.",
             "Prestasi anda memberangsangkan. Usaha lagi untuk kejayaan yang lebih cemerlang",
@@ -200,407 +221,220 @@
             "Usaha dengan lebih kuat lagi. Pastikan keputusan kali ini dapat diubah melalui kerja keras selepas ini",
             "Usaha berterusan menjamin keputusan yang lebih baik pada masa akan datang",
             "Tingkatkan usaha anda. Anda pasti akan berjaya dengan lebih baik daripada hari ini.",
+            "Pencapaian memuaskan. Teruskan usaha anda. Anda pasti berjaya.",
             "Hargai masa dan tingkatkan usaha anda.",
             "Pencapaian masih lemah. Tingkatkan usaha dan ubah sikap demi masa depan anda.",
-            "Hargailah masa dan buangkan sikap kerap ponteng kelas. Pencapaian memuaskan. Teruskan usaha anda. Anda pasti berjaya."
-        ];
+            "Hargailah masa dan buangkan sikap kerap ponteng kelas. Tingkatkan usaha dan ubah sikap demi masa depan anda."
+        ]
+    };
 
-        // PEMETAAN LAJUR MARKAH 0-INDEXED (BESERTA SINGKATAN SUBJEK UNTUK CETAKAN JADUAL)
-        const subjectsLower = [
-            {name: "BAHASA MELAYU", shortName: "BM", mark: 4, grade: 5}, 
-            {name: "ENGLISH LANGUAGE", shortName: "ENG", mark: 6, grade: 7},
-            {name: "MATEMATIK", shortName: "MATHS", mark: 8, grade: 9}, 
-            {name: "SEJARAH", shortName: "SEJ", mark: 10, grade: 11},
-            {name: "SAINS", shortName: "SN", mark: 12, grade: 13}, 
-            {name: "GEOGRAFI", shortName: "GEO", mark: 14, grade: 15},
-            {name: "BAHASA IBAN", shortName: "BIB", mark: 16, grade: 17}, 
-            {name: "PENDIDIKAN MORAL", shortName: "PM", mark: 18, grade: 19},
-            {name: "PENDIDIKAN ISLAM", shortName: "PI", mark: 20, grade: 21}, 
-            {name: "REKA BENTUK & TEKNOLOGI", shortName: "RBT", mark: 22, grade: 23},
-            {name: "ASAS SAINS KOMPUTER", shortName: "ASK", mark: 24, grade: 25}, 
-            {name: "PENDIDIKAN SENI VISUAL", shortName: "PSN", mark: 26, grade: 27},
-            {name: "PENDIDIKAN JASMANI & PENDIDIKAN KESIHATAN", shortName: "PJPK", mark: 40, grade: 41}
-        ];
+    let allData = [];
+    let filteredData = [];
 
-        const subjectsUpper = [
-            {name: "BAHASA MELAYU", shortName: "BM", mark: 4, grade: 5}, 
-            {name: "SEJARAH", shortName: "SEJ", mark: 6, grade: 7},
-            {name: "ENGLISH LANGUAGE", shortName: "ENG", mark: 8, grade: 9}, 
-            {name: "MATEMATIK/MATHEMATICS", shortName: "MATHS", mark: 10, grade: 11},
-            {name: "PENDIDIKAN MORAL", shortName: "PM", mark: 12, grade: 13}, 
-            {name: "PENDIDIKAN ISLAM", shortName: "PI", mark: 14, grade: 15},
-            {name: "SAINS", shortName: "SN", mark: 16, grade: 17}, 
-            {name: "PENDIDIKAN SENI VISUAL", shortName: "PSV", mark: 18, grade: 19},
-            {name: "BAHASA IBAN", shortName: "BIB", mark: 20, grade: 21}, 
-            {name: "REKA CIPTA", shortName: "RC", mark: 22, grade: 23},
-            {name: "PENGAJIAN PENIAGAAN", shortName: "PP", mark: 24, grade: 25}, 
-            {name: "PHYSICS", shortName: "FIZ", mark: 26, grade: 27},
-            {name: "CHEMISTRY", shortName: "KIM", mark: 28, grade: 29}, 
-            {name: "BIOLOGY", shortName: "BIO", mark: 30, grade: 31},
-            {name: "ADDITIONAL MATHEMATICS", shortName: "ADD MATHS", mark: 32, grade: 33}, 
-            {name: "SAINS KOMPUTER", shortName: "SK", mark: 34, grade: 35},
-            {name: "KIMPALAN ARKA & GAS", shortName: "KAG", mark: 36, grade: 37}, 
-            {name: "PENDIDIKAN JASMANI & PENDIDIKAN KESIHATAN", shortName: "PJPK", mark: 62, grade: 63}
-        ];
-
-        const summaryLower = { jum: 54, purata: 55, gp: 56, kdk: 58, analisis: 59, ulasan: 60, kep: 62, kdt: 69, guru: 70 };
-        const summaryUpper = { jum: 78, purata: 79, gp: 80, png: 81, kep: 82, kdk: 83, analisis: 84, ulasan: 100, kdt: 101, guru: 102 };
-
-        let currentData = [];
-
-        async function fetchCSV(url) {
-            try {
-                document.getElementById('loading').classList.remove('hidden');
-                const response = await fetch(url);
-                const text = await response.text();
-                
-                const rows = []; let currentRow = []; let currentCell = ''; let insideQuotes = false;
-                
-                for (let i = 0; i < text.length; i++) {
-                    const char = text[i];
-                    if (char === '"') insideQuotes = !insideQuotes;
-                    else if (char === ',' && !insideQuotes) { currentRow.push(currentCell.trim()); currentCell = ''; }
-                    else if (char === '\n' && !insideQuotes) { currentRow.push(currentCell.trim()); rows.push(currentRow); currentRow = []; currentCell = ''; }
-                    else if (char !== '\r') currentCell += char;
-                }
-                if (currentRow.length > 0) { currentRow.push(currentCell.trim()); rows.push(currentRow); }
-                
-                document.getElementById('loading').classList.add('hidden');
-                return rows;
-            } catch (error) {
-                alert("Ralat menyambung ke pangkalan data.");
-                document.getElementById('loading').classList.add('hidden');
-                return [];
-            }
+    // Login Logic
+    function login() {
+        const u = document.getElementById('username').value;
+        const p = document.getElementById('password').value;
+        if(u === 'GT2026' && p === 'GT2026') {
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+        } else {
+            document.getElementById('login-err').innerText = 'ID atau Kata Laluan Salah!';
         }
+    }
 
-        // FUNGSI LOG MASUK
-        function teacherLogin() {
-            const id = document.getElementById('tch-id').value;
-            const pass = document.getElementById('tch-pass').value;
-            if(id === 'GT2026' && pass === 'GT2026') {
-                document.getElementById('teacher-login').classList.add('hidden');
-                document.getElementById('teacher-dashboard').classList.remove('hidden');
-            } else { alert("ID Pengguna atau Kata Laluan Salah!"); }
-        }
+    function logout() {
+        location.reload();
+    }
 
-        // FUNGSI LOG KELUAR - DIKEMAS KINI
-        function logout() {
-            if(confirm("Adakah anda pasti untuk keluar? Data yang belum disimpan ke hamparan MASTER mungkin kekal dalam pelayar peranti ini sahaja.")){
-                // Paparkan semula Log Masuk, sembunyikan Papan Pemuka
-                document.getElementById('teacher-login').classList.remove('hidden');
-                document.getElementById('teacher-dashboard').classList.add('hidden');
-                document.getElementById('class-controls').classList.add('hidden');
-                
-                // Kosongkan field ID dan Password
-                document.getElementById('tch-id').value = '';
-                document.getElementById('tch-pass').value = '';
+    // Load Data based on Form
+    async function loadClasses() {
+        const ting = document.getElementById('select-tingkatan').value;
+        if(!ting) return;
 
-                // Reset Dropdown Pilihan Tingkatan dan Kelas
-                document.getElementById('tch-tingkatan').value = '';
-                document.getElementById('tch-kelas').innerHTML = '<option value="">-- Sila Pilih Tingkatan Dahulu --</option>';
-                
-                // Kosongkan data dalam jadual secara total
-                document.getElementById('student-list-container').innerHTML = '';
-                currentData = []; // Buang memori data
-                
-                // Tolak scroll semula ke atas (top of the page)
-                window.scrollTo(0, 0);
-            }
-        }
-
-        async function fetchClassesForTeacher() {
-            const form = document.getElementById('tch-tingkatan').value;
-            if(!form) { document.getElementById('class-controls').classList.add('hidden'); return; }
-            
-            const data = await fetchCSV(config[form].sheet);
-            currentData = data;
-            
-            const classes = new Set();
-            for(let i=1; i<data.length; i++) { if(data[i][3]) classes.add(data[i][3]); }
-            
-            const selKelas = document.getElementById('tch-kelas');
-            selKelas.innerHTML = '<option value="">-- Pilih Kelas --</option>';
-            Array.from(classes).sort().forEach(cls => {
-                selKelas.innerHTML += `<option value="${cls}">${cls}</option>`;
-            });
-        }
-
-        function buildUlasanDropdown(studentIC, currentUlasan) {
-            let savedUlasan = localStorage.getItem(`ulasan_${studentIC}`);
-            let ulasanToUse = savedUlasan !== null ? savedUlasan : currentUlasan;
-
-            let uniqueOptions = [...new Set(ulasanOptions)];
-
-            let selectHTML = `<select id="ulasan-${studentIC}" class="ulasan-select" onchange="storeLocal('${studentIC}')">
-                <option value="">-- Pilih Ulasan --</option>`;
-            
-            uniqueOptions.forEach(opt => {
-                const selected = (ulasanToUse === opt) ? 'selected' : '';
-                selectHTML += `<option value="${opt}" ${selected}>${opt}</option>`;
-            });
-            
-            if (ulasanToUse && !uniqueOptions.includes(ulasanToUse)) {
-                selectHTML += `<option value="${ulasanToUse}" selected>${ulasanToUse} (Sedia Ada)</option>`;
-            }
-            selectHTML += `</select>`;
-            return selectHTML;
-        }
-
-        function storeLocal(ic) {
-            const ulasan = document.getElementById(`ulasan-${ic}`).value;
-            localStorage.setItem(`ulasan_${ic}`, ulasan);
-        }
-
-        function loadClassData() {
-            const form = document.getElementById('tch-tingkatan').value;
-            const kelas = document.getElementById('tch-kelas').value;
-            if(!kelas) { document.getElementById('class-controls').classList.add('hidden'); return; }
-
-            const students = currentData.filter(row => row[3] === kelas);
-            document.getElementById('class-controls').classList.remove('hidden');
-            
-            const sumConf = config[form].type === 'lower' ? summaryLower : summaryUpper;
-            const container = document.getElementById('student-list-container');
-            
-            let html = `<table><tr>
-                <th width="3%">Bil</th>
-                <th width="15%">Nama</th>
-                <th width="10%">No K/P</th>
-                <th width="18%">Analisis</th>
-                <th width="10%">Keputusan</th>
-                <th width="34%">Pilihan Ulasan Guru</th>
-                <th width="10%" style="text-align:center;">Tindakan</th>
-            </tr>`;
-            
-            students.forEach((std, idx) => {
-                const ulasan = std[sumConf.ulasan] || '';
-                html += `<tr>
-                    <td style="text-align:center;">${idx+1}</td>
-                    <td><b>${std[2]}</b></td>
-                    <td>${std[1]}</td>
-                    <td>${std[sumConf.analisis] || '-'}</td>
-                    <td>${std[sumConf.kep] || '-'}</td>
-                    <td>${buildUlasanDropdown(std[1], ulasan)}</td>
-                    <td style="text-align:center;">
-                        <button onclick="printIndividual('${std[1]}', '${form}')" style="background:#2196F3;color:white;border:none;padding:8px 10px;border-radius:4px;cursor:pointer;width:100%; font-weight:bold;">Cetak Slip</button>
-                    </td>
-                </tr>`;
-            });
-            html += `</table>`;
-            container.innerHTML = html;
-        }
-
-        async function saveAllUlasan() {
-            const form = document.getElementById('tch-tingkatan').value;
-            const kelas = document.getElementById('tch-kelas').value;
-            if(!form || !kelas) return alert("Sila pilih tingkatan dan kelas.");
-
-            const scriptUrl = config[form].script;
-            const students = currentData.filter(row => row[3] === kelas);
-            
-            if(!confirm(`Adakah anda pasti untuk menyimpan ulasan untuk semua pelajar kelas ${kelas} ke dalam hamparan 'MASTER'?`)) return;
-
-            document.getElementById('loading').innerText = "Sedang menyimpan data ke pangkalan hamparan 'MASTER'...";
-            document.getElementById('loading').classList.remove('hidden');
-
-            try {
-                const requests = students.map(std => {
-                    const ic = std[1];
-                    const ulasanEl = document.getElementById(`ulasan-${ic}`);
-                    if(!ulasanEl) return Promise.resolve();
-                    const ulasan = ulasanEl.value;
-                    
-                    localStorage.setItem(`ulasan_${ic}`, ulasan);
-
-                    return fetch(scriptUrl, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: `ic=${encodeURIComponent(ic)}&ulasan=${encodeURIComponent(ulasan)}`
-                    });
+        const url = CONFIG.csvLinks[ting];
+        Papa.parse(url, {
+            download: true,
+            header: false, // Kita guna kolum manual mengikut spesifikasi
+            complete: function(results) {
+                allData = results.data;
+                const classes = [...new Set(allData.map(row => row[3]))].filter(c => c && c !== 'KELAS');
+                const selectKelas = document.getElementById('select-kelas');
+                selectKelas.innerHTML = '<option value="">-- Pilih Kelas --</option>';
+                classes.forEach(c => {
+                    selectKelas.innerHTML += `<option value="${c}">${c}</option>`;
                 });
-
-                await Promise.all(requests);
-                alert("Berjaya! Semua ulasan guru telah dikemas kini ke dalam hamparan 'MASTER' dan LocalStore.");
-            } catch (e) {
-                alert("Ralat komunikasi dengan pelayan. Data disimpan secara tempatan (local).");
             }
-            document.getElementById('loading').classList.add('hidden');
-            document.getElementById('loading').innerText = "Sedang memproses... Sila tunggu sebentar.";
-        }
+        });
+    }
 
-        function getLatestUlasan(ic, stdUlasanSheet) {
-            let localUlasan = localStorage.getItem(`ulasan_${ic}`);
-            return localUlasan !== null ? localUlasan : stdUlasanSheet;
-        }
+    function filterData() {
+        const kelas = document.getElementById('select-kelas').value;
+        const ting = document.getElementById('select-tingkatan').value;
+        if(!kelas) return;
 
-        function generateSlipHTML(std, form) {
-            const type = config[form].type;
-            const sub = type === 'lower' ? subjectsLower : subjectsUpper;
-            const sum = type === 'lower' ? summaryLower : summaryUpper;
-            const namaGuru = std[sum.guru] ? std[sum.guru].toUpperCase() : 'GURU TINGKATAN';
-            const kelas = std[3] ? std[3].toUpperCase() : '';
+        // Filter: Hanya yang ada nama (Col C) dan kelas sepadan (Col D)
+        filteredData = allData.filter(row => row[3] === kelas && row[2] && row[2] !== 'NAMA');
+        
+        renderTable(ting, kelas);
+    }
+
+    function getSubjekMapping(ting, kelas) {
+        // Objek pemetaan subjek mengikut tingkatan dan kelas
+        const maps = {
+            'T123': [
+                {n: 'BM', m: 4, g: 5}, {n: 'ENG', m: 6, g: 7}, {n: 'MATHS', m: 8, g: 9},
+                {n: 'SEJ', m: 10, g: 11}, {n: 'SN', m: 12, g: 13}, {n: 'GEO', m: 14, g: 15},
+                {n: 'BIB', m: 16, g: 17}, {n: 'PM', m: 18, g: 19}, {n: 'PI', m: 20, g: 21},
+                {n: 'RBT', m: 22, g: 23}, {n: 'ASK', m: 24, g: 25}, {n: 'PSV', m: 26, g: 27},
+                {n: 'PJPK', m: 40, g: 41}
+            ],
+            'T45': [
+                {n: 'BM', m: 4, g: 5}, {n: 'SEJ', m: 6, g: 7}, {n: 'ENG', m: 8, g: 9},
+                {n: 'MATHS', m: 10, g: 11}, {n: 'PM', m: 12, g: 13}, {n: 'PI', m: 14, g: 15},
+                {n: 'SN', m: 16, g: 17}, {n: 'PSV', m: 18, g: 19}, {n: 'BIB', m: 20, g: 21},
+                {n: 'RC', m: 22, g: 23}, {n: 'PP', m: 24, g: 25}, {n: 'FIZ', m: 26, g: 27},
+                {n: 'KIM', m: 28, g: 29}, {n: 'BIO', m: 30, g: 31}, {n: 'ADD MATHS', m: 32, g: 33},
+                {n: 'SK', m: 34, g: 35}, {n: 'KAG', m: 36, g: 37}, {n: 'PJPK', m: 62, g: 63}
+            ]
+        };
+
+        let currentMap = (ting <= 3) ? maps.T123 : maps.T45;
+        
+        // Tapis subjek berdasarkan kelas (Contoh: 4SN hanya ada subjek sains)
+        // Logik tapis ini boleh dikembangkan mengikut senarai "Sebaik Guru Kelas pilih kelas..."
+        return currentMap;
+    }
+
+    function renderTable(ting, kelas) {
+        const container = document.getElementById('table-container');
+        const subjekMap = getSubjekMapping(ting, kelas);
+        
+        let html = `<table><thead><tr><th>NAMA</th>`;
+        subjekMap.forEach(s => html += `<th>${s.n}</th>`);
+        html += `<th>JUM</th><th>PURATA</th><th>GP</th><th>KDK</th><th>ULASAN</th></tr></thead><tbody>`;
+
+        filteredData.forEach((row, idx) => {
+            // Abaikan jika tiada markah (NULL) - dikesan dari Kolum Jumlah
+            const jumCol = (ting <= 3) ? 54 : 78; // BC=54, CA=78 (0-indexed)
+            if(!row[jumCol] || row[jumCol] === '0' || row[jumCol] === '') return;
+
+            html += `<tr><td>${row[2]}</td>`;
+            subjekMap.forEach(s => {
+                const markah = row[s.m] || '-';
+                const gred = row[s.g] || '';
+                html += `<td>${markah}<br><small>${gred}</small></td>`;
+            });
+
+            // Rumusan
+            const colIdx = (ting <= 3) ? {j:54, p:55, g:56, k:58, u:60} : {j:78, p:79, g:80, k:83, u:74};
+            html += `<td>${row[colIdx.j]}</td><td>${row[colIdx.p]}</td><td>${row[colIdx.g]}</td><td>${row[colIdx.k]}</td>`;
             
-            const currentUlasan = getLatestUlasan(std[1], std[sum.ulasan] || '');
+            // Ulasan Dropdown
+            let options = CONFIG.ulasanOptions.map(opt => `<option value="${opt}" ${row[colIdx.u] === opt ? 'selected' : ''}>${opt}</option>`).join('');
+            html += `<td><select class="ulasan-select" onchange="updateUlasan(${idx}, this.value, ${ting})">${options}</select></td>`;
+            html += `</tr>`;
+        });
 
-            let html = `
-            <div class="slip-container">
-                <div class="slip-header">
-                    <img src="https://i.ibb.co/670hn3CB/smk-selirik.png" alt="Header SMK Selirik">
-                </div>
-                <h2 style="text-align:center; font-size:16px; margin: 10px 0 15px; text-decoration:underline;">SLIP KEPUTUSAN PEPERIKSAAN PERTENGAHAN 1 (MAC) 2026</h2>
-                
-                <div class="slip-details">
-                    <div>NAMA : ${std[2]}</div>
-                    <div>TINGKATAN : ${std[3]}</div>
-                    <div>NO. KAD PENGENALAN : ${std[1]}</div>
-                </div>
-                
-                <table class="slip-table" style="margin-bottom: 10px; width: 100%; border-collapse: collapse;">
-                    <tr><th style="width:60%; text-align:left;">MATA PELAJARAN</th><th style="text-align:center;">MARKAH</th><th style="text-align:center;">GRED</th></tr>`;
+        html += `</tbody></table>`;
+        container.innerHTML = html;
+    }
+
+    async function updateUlasan(dataIdx, val, ting) {
+        const row = filteredData[dataIdx];
+        const scriptUrl = CONFIG.scripts[ting];
+        
+        // Simpan ke Google Sheet melalui Apps Script
+        // Format: ?nama=...&kelas=...&ulasan=...
+        const params = new URLSearchParams({
+            nama: row[2],
+            kelas: row[3],
+            ulasan: val,
+            action: 'updateUlasan'
+        });
+
+        try {
+            fetch(`${scriptUrl}?${params.toString()}`, { mode: 'no-cors' });
+            alert('Ulasan dikemaskini!');
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    function saveToLocal() {
+        localStorage.setItem('dashboard_data', JSON.stringify(filteredData));
+        alert('Data disimpan ke storan tempatan (LocalStore).');
+    }
+
+    // Cetakan
+    function printOverall() {
+        const content = document.getElementById('table-container').innerHTML;
+        const headerImg = "https://i.ibb.co/670hn3CB/smk-selirik.png";
+        const printArea = document.getElementById('print-area');
+        
+        printArea.innerHTML = `
+            <div class="slip-header"><img src="${headerImg}"></div>
+            <h2 style="text-align:center">REKOD KEPUTUSAN KESELURUHAN - ${document.getElementById('select-kelas').value}</h2>
+            <div style="transform: scale(0.9); transform-origin: top center;">${content}</div>
+        `;
+        window.print();
+    }
+
+    function printBulkSlips() {
+        const ting = document.getElementById('select-tingkatan').value;
+        const kelas = document.getElementById('select-kelas').value;
+        const subjekMap = getSubjekMapping(ting, kelas);
+        const headerImg = "https://i.ibb.co/670hn3CB/smk-selirik.png";
+        let html = "";
+
+        filteredData.forEach(row => {
+            const jumCol = (ting <= 3) ? 54 : 78;
+            if(!row[jumCol] || row[jumCol] === '0') return;
+
+            const col = (ting <= 3) ? {j:54, p:55, g:56, k:58, kt:70, u:60, gt:71} : {j:78, p:79, g:80, k:83, kt:101, u:74, gt:102};
+
+            html += `
+            <div class="page-break">
+                <div class="slip-header"><img src="${headerImg}"></div>
+                <h3 style="text-align:center">SLIP KEPUTUSAN PEPERIKSAAN MAC 2026</h3>
+                <p>NAMA: ${row[2]} <br> KELAS: ${row[3]}</p>
+                <hr>
+                <table style="width:100%">
+                    <tr><th>SUBJEK</th><th>MARKAH</th><th>GRED</th></tr>`;
             
-            sub.forEach(s => {
-                const mark = std[s.mark];
-                const grade = std[s.grade];
-                if(mark && mark.toUpperCase() !== 'NULL' && mark.trim() !== '') {
-                    html += `<tr><td>${s.name}</td><td style="text-align:center;">${mark}</td><td style="text-align:center;">${grade || ''}</td></tr>`;
+            subjekMap.forEach(s => {
+                if(row[s.m] && row[s.m] !== 'NULL') {
+                    html += `<tr><td>${s.n}</td><td>${row[s.m]}</td><td>${row[s.g]}</td></tr>`;
                 }
             });
 
-            html += `</table>
-                
-                <div class="summary-box">
-                    <p>JUMLAH MARKAH : ${std[sum.jum] || ''} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PURATA : ${std[sum.purata] || ''}</p>
-                    <p>GRED PURATA (GP) : ${std[sum.gp] || ''} ${type==='upper' ? `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PNG : ${std[sum.png] || ''}` : ''}</p>
-                    <p>KEDUDUKAN DALAM KELAS : ${std[sum.kdk] || ''} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DALAM TINGKATAN : ${std[sum.kdt] || ''}</p>
-                    <p>KEPUTUSAN : ${std[sum.kep] || ''}</p>
-                    <p>ANALISIS : ${std[sum.analisis] || ''}</p>
-                    <p>ULASAN GURU TINGKATAN : ${currentUlasan}</p>
-                </div>
-
-                <div class="signature-area">
-                    <div class="left-sign">
-                        <p>Disahkan oleh,</p>
-                        <br><br><br>
-                        <p><b>AWIN ANAK ENGGA</b></p>
-                        <p>PENGETUA</p>
-                        <p>SMK SELIRIK</p>
+            html += `
+                </table>
+                <div style="margin-top:20px; display:flex; justify-content:space-between;">
+                    <div>
+                        <p>Jumlah Markah: ${row[col.j]}</p>
+                        <p>Purata: ${row[col.p]} | GP: ${row[col.g]}</p>
+                        <p>Kedudukan: ${row[col.k]} / ${filteredData.length}</p>
                     </div>
-                    <div class="right-sign">
-                        <p>Disemak oleh,</p>
-                        <br><br><br>
-                        <p><b>${namaGuru}</b></p>
-                        <p>Guru Tingkatan ${kelas}</p>
-                        <p>SMK SELIRIK</p>
+                    <div>
+                        <p>Ulasan Guru: <br> <i>"${row[col.u] || 'Tiada ulasan'}"</i></p>
+                    </div>
+                </div>
+                <div style="margin-top:50px; display:flex; justify-content:space-between;">
+                    <div style="text-align:center">
+                        ___________________<br>AWIN ANAK ENGGA<br>PENGETUA SMK SELIRIK
+                    </div>
+                    <div style="text-align:center">
+                        ___________________<br>${row[col.gt]}<br>GURU TINGKATAN ${row[3]}
                     </div>
                 </div>
             </div>`;
-            return html;
-        }
+        });
 
-        function printIndividual(ic, form) {
-            const student = currentData.find(row => row[1] === ic);
-            if(student) {
-                document.body.className = ''; 
-                document.getElementById('print-area').innerHTML = generateSlipHTML(student, form);
-                setTimeout(() => window.print(), 500); 
-            }
-        }
+        document.getElementById('print-area').innerHTML = html;
+        window.print();
+    }
+</script>
 
-        function printBulkSlips() {
-            const form = document.getElementById('tch-tingkatan').value;
-            const kelas = document.getElementById('tch-kelas').value;
-            const students = currentData.filter(row => row[3] === kelas);
-            
-            let html = '';
-            students.forEach(std => { html += generateSlipHTML(std, form); });
-
-            document.body.className = ''; 
-            document.getElementById('print-area').innerHTML = html;
-            setTimeout(() => window.print(), 800);
-        }
-
-        function printClassTable() {
-            const form = document.getElementById('tch-tingkatan').value;
-            const kelas = document.getElementById('tch-kelas').value;
-            const students = currentData.filter(row => row[3] === kelas);
-            
-            const type = config[form].type;
-            const sum = type === 'lower' ? summaryLower : summaryUpper;
-            const subList = type === 'lower' ? subjectsLower : subjectsUpper;
-
-            const activeSubjects = subList.filter(s => {
-                return students.some(std => std[s.mark] && std[s.mark].toUpperCase() !== 'NULL' && std[s.mark].trim() !== '');
-            });
-
-            let html = `
-            <div style="font-family: Arial, sans-serif;">
-                <h2 style="text-align:center; font-size: 16px; text-transform: uppercase;">REKOD KEPUTUSAN KESELURUHAN KELAS ${kelas}</h2>
-                <h3 style="text-align:center; font-size: 12px; margin-top:-10px;">PEPERIKSAAN PERTENGAHAN 1 (MAC) 2026</h3>
-                <table class="master-table" style="margin-top: 15px;">
-                    <thead>
-                        <tr>
-                            <th rowspan="2">Bil</th>
-                            <th rowspan="2">Nama</th>
-                            <th rowspan="2">No K/P</th>`;
-            
-            activeSubjects.forEach(s => {
-                html += `<th colspan="2" style="text-align:center;">${s.shortName}</th>`;
-            });
-
-            html += `       <th rowspan="2">JUM</th>
-                            <th rowspan="2">PURATA</th>
-                            <th rowspan="2">GP</th>
-                            ${type==='upper' ? `<th rowspan="2">PNG</th>` : ''}
-                            <th rowspan="2">KDK</th>
-                            <th rowspan="2">KDT</th>
-                            <th rowspan="2">KEP</th>
-                        </tr>
-                        <tr>`;
-            
-            activeSubjects.forEach(() => {
-                html += `<th style="text-align:center;">M</th><th style="text-align:center;">G</th>`;
-            });
-            html += `   </tr>
-                    </thead>
-                    <tbody>`;
-            
-            students.sort((a, b) => {
-                let kdkA = parseInt(a[sum.kdk]) || 999;
-                let kdkB = parseInt(b[sum.kdk]) || 999;
-                return kdkA - kdkB;
-            });
-
-            students.forEach((std, idx) => {
-                html += `<tr>
-                    <td style="text-align:center;">${idx+1}</td>
-                    <td style="white-space: nowrap;"><b>${std[2]}</b></td>
-                    <td>${std[1]}</td>`;
-                    
-                activeSubjects.forEach(s => {
-                    const mark = (std[s.mark] && std[s.mark].toUpperCase() !== 'NULL') ? std[s.mark] : '';
-                    const grade = (std[s.grade] && std[s.grade].toUpperCase() !== 'NULL') ? std[s.grade] : '';
-                    html += `<td style="text-align:center;">${mark}</td><td style="text-align:center;">${grade}</td>`;
-                });
-
-                html += `
-                    <td style="text-align:center;">${std[sum.jum] || ''}</td>
-                    <td style="text-align:center;">${std[sum.purata] || ''}</td>
-                    <td style="text-align:center;">${std[sum.gp] || ''}</td>
-                    ${type==='upper' ? `<td style="text-align:center;">${std[sum.png] || ''}</td>` : ''}
-                    <td style="text-align:center;">${std[sum.kdk] || ''}</td>
-                    <td style="text-align:center;">${std[sum.kdt] || ''}</td>
-                    <td style="text-align:center;">${std[sum.kep] || ''}</td>
-                </tr>`;
-            });
-            html += `</tbody></table></div>`;
-
-            document.body.className = 'landscape-print';
-            document.getElementById('print-area').innerHTML = html;
-            
-            setTimeout(() => window.print(), 400);
-        }
-    </script>
 </body>
 </html>
